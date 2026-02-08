@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="google-site-verification" content="IA8M7NR1JhLIrkcrK1A6f0qZfz4IdcLH8xARrOFZmpc" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProEarn - Verified</title>
+    <style>
+        :root { --primary: #00ff00; --bg: #121212; --card: #1f1f1f; --blue: #007bff; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .card { background: var(--card); padding: 20px; border-radius: 20px; width: 340px; text-align: center; border: 1px solid #333; }
+        input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #444; background: #2a2a2a; color: white; }
+        .btn { width: 100%; padding: 15px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-blue { background: var(--blue); color: white; }
+        .balance { font-size: 40px; color: var(--primary); font-weight: bold; }
+        .progress-container { width: 100%; background: #333; border-radius: 10px; height: 10px; display: none; margin: 15px 0; }
+        .progress-bar { width: 0%; height: 100%; background: var(--primary); transition: width 1s linear; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div id="loginSection" class="card">
+    <h2 style="color: var(--primary);">ProEarn Login</h2>
+    <input type="email" id="userEmail" placeholder="Email Address">
+    <input type="tel" id="userPhone" placeholder="Phone Number">
+    <button class="btn btn-blue" onclick="handleLogin()">Login & Start</button>
+</div>
+
+<div id="dashboardSection" class="card hidden">
+    <div class="balance">₹<span id="balanceDisplay">0.00</span></div>
+    <div id="pContainer" class="progress-container"><div id="pBar" class="progress-bar"></div></div>
+    <button class="btn btn-blue" id="adBtn" onclick="startAd()">Watch Ad (30s)</button>
+</div>
+
+<script>
+    let balance = 0;
+    function handleLogin() {
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('dashboardSection').classList.remove('hidden');
+    }
+    function startAd() {
+        let btn = document.getElementById('adBtn');
+        let pBar = document.getElementById('pBar');
+        let timeLeft = 30;
+        btn.disabled = true;
+        document.getElementById('pContainer').style.display = 'block';
+        let timer = setInterval(() => {
+            timeLeft--;
+            pBar.style.width = ((30 - timeLeft) / 30 * 100) + '%';
+            btn.innerText = `Wait ${timeLeft}s...`;
+            if(timeLeft <= 0) {
+                clearInterval(timer);
+                balance += 0.50;
+                document.getElementById('balanceDisplay').innerText = balance.toFixed(2);
+                btn.innerText = "Watch Ad (30s)";
+                btn.disabled = false;
+                document.getElementById('pContainer').style.display = 'none';
+            }
+        }, 1000);
+    }
+</script>
+</body>
+</html>
