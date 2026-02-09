@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-site-verification" content="<meta name="google-site-verification" content="R8ngVXj9NJWcmV8qsFQggnrcJjnSdFsS55-0uHT4fms" />
-    <title>ProEarn - 5% Commission Secure</title>
+    <meta name="google-site-verification" content="R8ngVXj9NJWcmV8qsFQggnrcJjnSdFsS55-0uHT4fms" />
+    <title>ProEarn - Final Secure</title>
     <style>
         :root { --primary: #00ff00; --bg: #121212; --card: #1f1f1f; --blue: #007bff; --red: #ff4444; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .card { background: var(--card); padding: 25px; border-radius: 20px; width: 320px; text-align: center; border: 1px solid #333; }
+        .card { background: var(--card); padding: 25px; border-radius: 20px; width: 320px; text-align: center; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         input, select { width: 90%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #444; background: #2a2a2a; color: white; }
-        .btn { width: 100%; padding: 15px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn { width: 100%; padding: 15px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; }
         .btn-blue { background: var(--blue); color: white; }
         .btn-red { background: var(--red); color: white; }
         .balance { font-size: 35px; color: var(--primary); font-weight: bold; margin: 15px 0; }
         .hidden { display: none; }
+        .rules-list { text-align: left; font-size: 11px; color: #ccc; background: #2a2a2a; padding: 12px; border-radius: 10px; margin: 10px 0; line-height: 1.5; }
         .progress-bar { width: 0%; height: 10px; background: var(--primary); border-radius: 5px; transition: width 0.3s; }
-        .rules-list { text-align: left; font-size: 11px; color: #ccc; background: #2a2a2a; padding: 12px; border-radius: 10px; margin: 10px 0; }
     </style>
 </head>
 <body>
@@ -29,113 +29,69 @@
     </div>
 
     <div id="dashSec" class="card hidden">
-        <div style="font-size: 10px; color: var(--primary);">🛡️ ANTI-CHEAT ON</div>
-        <h2>Balance</h2>
+        <div style="font-size: 10px; color: var(--primary);">🛡️ ANTI-CHEAT ACTIVE</div>
+        <h2>Wallet</h2>
         <div class="balance">₹<span id="balDisp">0.00</span></div>
         <div id="pCont" style="display:none; background:#333; border-radius:5px; margin:15px 0;"><div id="pBar" class="progress-bar"></div></div>
         
         <div id="capSec" class="hidden" style="border:1px dashed var(--primary); padding:10px; margin-bottom:15px;">
             <p id="capQ" style="font-weight:bold;"></p>
             <input type="number" id="capInput" placeholder="Answer?">
-            <button class="btn btn-blue" onclick="checkCap()">Claim Reward</button>
+            <button class="btn btn-blue" onclick="checkCap()">Claim ₹0.50</button>
         </div>
 
-        <button class="btn btn-blue" id="adBtn" onclick="startAd()">Watch Ad (30s) - ₹0.50</button>
+        <button class="btn btn-blue" id="adBtn" onclick="startAd()">Watch Ad (30s)</button>
         <button class="btn btn-red" id="wBtn" onclick="showW()">Withdraw</button>
-        <button class="btn" style="background:#444; color:white;" onclick="showR()">Rules</button>
+        <button class="btn" style="background:#444; color:white;" onclick="showR()">App Rules (Niyam)</button>
     </div>
 
     <div id="withSec" class="card hidden">
-        <h2>Withdraw</h2>
-        <p style="font-size:11px; color:#ffbc00;">Time: 24-48 Hours | Fee: 5%</p>
+        <h2>Withdrawal</h2>
+        <p style="font-size:11px; color:#ffbc00;">Time: 24 to 48 Hours</p>
+        <div class="rules-list">
+            • Minimum ₹200 | **Fee: 5% Charge**<br>
+            • UPI ID galat hui toh payment fail hogi.
+        </div>
         <select id="wAmt">
-            <option value="200">₹200 (Charge ₹10)</option>
-            <option value="500">₹500 (Charge ₹25)</option>
-            <option value="1000">₹1000 (Charge ₹50)</option>
+            <option value="200">₹200 (Tax ₹10)</option>
+            <option value="500">₹500 (Tax ₹25)</option>
+            <option value="1000">₹1000 (Tax ₹50)</option>
         </select>
         <input type="text" id="upi" placeholder="Enter UPI ID">
-        <button class="btn btn-blue" onclick="doW()">Withdraw Now</button>
+        <button class="btn btn-blue" onclick="doW()">Confirm Transfer</button>
         <button class="btn" style="background:#444; color:white;" onclick="backD()">Back</button>
     </div>
 
     <div id="ruleSec" class="card hidden">
-        <h2>Rules</h2>
+        <h2>System Rules</h2>
         <div class="rules-list">
-            1. Ad ke waqt tab change na karein.<br>
-            2. Har withdrawal par 5% tax kategi.<br>
-            3. Withdrawal 24-48 ghante mein aayega.<br>
-            4. Galat captcha par reward nahi milega.
+            1. Har withdrawal par 5% commission kategi.<br>
+            2. Ad ke waqt tab change karna sakht mana hai.<br>
+            3. Payment 24-48 ghante mein transfer hogi.<br>
+            4. Ek mobile par ek hi account chalaein.
         </div>
-        <button class="btn btn-blue" onclick="backD()">Okay</button>
+        <button class="btn btn-blue" onclick="backD()">Theek Hai</button>
     </div>
 
     <script>
         let bal = 0.0, isPaused = false, curW = 0, cAns = 0, adT;
-
-        function doLogin() { 
-            if(document.getElementById('uEmail').value.includes('@')) { 
-                document.getElementById('loginSec').classList.add('hidden'); 
-                document.getElementById('dashSec').classList.remove('hidden'); 
-            } else { alert("Invalid Login!"); }
-        }
-
-        function startAd() { 
-            document.getElementById('adBtn').disabled = true; 
-            document.getElementById('pCont').style.display = 'block'; 
-            curW = 0; runT(); 
-        }
-
-        function runT() { 
-            adT = setInterval(() => { 
-                if(!isPaused) { 
-                    curW += 1; 
-                    document.getElementById('pBar').style.width = curW + '%'; 
-                    if(curW >= 100) { clearInterval(adT); showC(); } 
-                } 
-            }, 300); 
-        }
-
-        function showC() { 
-            let n1 = Math.floor(Math.random()*9)+1, n2 = Math.floor(Math.random()*9)+1; 
-            cAns = n1 + n2; 
-            document.getElementById('capQ').innerText = `Security: ${n1} + ${n2} = ?`; 
-            document.getElementById('capSec').classList.remove('hidden'); 
-            document.getElementById('pCont').style.display = 'none'; 
-        }
-
-        function checkCap() { 
-            if(parseInt(document.getElementById('capInput').value) === cAns) { 
-                bal += 0.50; 
-                document.getElementById('balDisp').innerText = bal.toFixed(2);
-                alert("₹0.50 Added!");
-            } else { alert("Wrong Answer!"); }
-            resetAd();
-        }
-
-        function resetAd() {
-            document.getElementById('capSec').classList.add('hidden');
-            document.getElementById('capInput').value = "";
-            document.getElementById('adBtn').disabled = false;
-        }
-
+        function doLogin() { if(document.getElementById('uEmail').value.includes('@')) { document.getElementById('loginSec').classList.add('hidden'); document.getElementById('dashSec').classList.remove('hidden'); } else { alert("Please enter valid email!"); } }
+        function startAd() { document.getElementById('adBtn').disabled = true; document.getElementById('wBtn').classList.add('hidden'); document.getElementById('pCont').style.display = 'block'; curW = 0; runT(); }
+        function runT() { adT = setInterval(() => { if(!isPaused) { curW += 1; document.getElementById('pBar').style.width = curW + '%'; if(curW >= 100) { clearInterval(adT); showC(); } } }, 300); }
+        function showC() { let n1 = Math.floor(Math.random()*9)+1, n2 = Math.floor(Math.random()*9)+1; cAns = n1 + n2; document.getElementById('capQ').innerText = `Human Verify: ${n1} + ${n2} = ?`; document.getElementById('capSec').classList.remove('hidden'); document.getElementById('pCont').style.display = 'none'; }
+        function checkCap() { if(parseInt(document.getElementById('capInput').value) === cAns) { bal += 0.50; document.getElementById('balDisp').innerText = bal.toFixed(2); alert("Success! ₹0.50 Added."); } else { alert("Wrong Answer!"); } resetUI(); }
+        function resetUI() { curW = 0; document.getElementById('capSec').classList.add('hidden'); document.getElementById('capInput').value = ""; document.getElementById('adBtn').disabled = false; document.getElementById('wBtn').classList.remove('hidden'); }
         document.addEventListener("visibilitychange", () => { isPaused = !!document.hidden; });
         function showW() { document.getElementById('dashSec').classList.add('hidden'); document.getElementById('withSec').classList.remove('hidden'); }
         function showR() { document.getElementById('dashSec').classList.add('hidden'); document.getElementById('ruleSec').classList.remove('hidden'); }
         function backD() { document.getElementById('withSec').classList.add('hidden'); document.getElementById('ruleSec').classList.add('hidden'); document.getElementById('dashSec').classList.remove('hidden'); }
-
         function doW() { 
             let a = parseInt(document.getElementById('wAmt').value); 
             let fee = a * 0.05; 
             let total = a + fee;
             if(bal < total) { alert("Balance kam hai! ₹" + total + " chahiye."); }
-            else { 
-                bal -= total; 
-                document.getElementById('balDisp').innerText = bal.toFixed(2);
-                alert("Request Sent! ₹" + fee + " (5%) Fee Deducted.");
-                backD(); 
-            } 
+            else { bal -= total; document.getElementById('balDisp').innerText = bal.toFixed(2); alert("Success! 24-48 ghante rukein."); backD(); } 
         }
     </script>
 </body>
 </html>
-
