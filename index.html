@@ -4,88 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="R8ngVXj9NJWcmV8qsFQggnrcJjnSdFsS5-0uHT4fms" />
-    <title>ProEarn - Rules & Secure Withdrawal</title>
+    <title>ProEarn - All-in-One Secure System</title>
     <style>
-        :root { --primary: #00ff00; --bg: #121212; --card: #1f1f1f; --blue: #007bff; --red: #ff4444; --gray: #888; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        :root { --primary: #00ff00; --bg: #121212; --card: #1f1f1f; --blue: #007bff; --red: #ff4444; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow-x: hidden; }
         .card { background: var(--card); padding: 25px; border-radius: 20px; width: 320px; text-align: center; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        input, select { width: 90%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #444; background: #2a2a2a; color: white; }
+        input, select { width: 90%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #444; background: #2a2a2a; color: white; outline: none; }
         .btn { width: 100%; padding: 15px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; }
         .btn-blue { background: var(--blue); color: white; }
         .btn-red { background: var(--red); color: white; }
-        .btn-rules { background: #444; color: white; margin-top: 10px; font-size: 13px; }
+        .btn-gray { background: #444; color: white; }
         .balance { font-size: 35px; color: var(--primary); font-weight: bold; margin: 15px 0; }
         .hidden { display: none; }
-        .progress-container { width: 100%; background: #333; border-radius: 10px; height: 10px; display: none; margin: 15px 0; overflow: hidden; }
+        .progress-container { width: 100%; background: #333; border-radius: 10px; height: 12px; display: none; margin: 15px 0; overflow: hidden; }
         .progress-bar { width: 0%; height: 100%; background: var(--primary); }
-        .rules-list { text-align: left; font-size: 12px; color: #ccc; line-height: 1.6; background: #2a2a2a; padding: 15px; border-radius: 10px; margin-top: 10px; }
-        .warning-text { color: #ffbc00; font-size: 11px; margin-top: 5px; font-weight: bold; }
+        .rules-list { text-align: left; font-size: 12px; color: #ccc; background: #2a2a2a; padding: 15px; border-radius: 10px; margin: 10px 0; line-height: 1.6; }
+        #status { font-size: 12px; color: #ffbc00; margin-bottom: 10px; display: none; }
     </style>
 </head>
 <body>
 
     <div id="loginSection" class="card">
         <h2 style="color: var(--primary);">ProEarn Login</h2>
-        <input type="email" id="userEmail" placeholder="Enter Email">
-        <input type="tel" id="userPhone" placeholder="Enter Phone Number">
-        <button class="btn btn-blue" onclick="handleLogin()">Login & Earn</button>
+        <input type="email" id="userEmail" placeholder="Email Address">
+        <input type="tel" id="userPhone" placeholder="Phone Number">
+        <button class="btn btn-blue" onclick="handleLogin()">Start Earning</button>
     </div>
 
     <div id="dashboardSection" class="card hidden">
-        <div style="font-size: 11px; color: var(--primary);">● SECURE SESSION</div>
-        <h2>Balance</h2>
+        <div style="font-size: 10px; color: var(--primary); margin-bottom: 5px;">🛡️ ANTI-CHEAT SECURED</div>
+        <h2>Wallet</h2>
         <div class="balance">₹<span id="balDisplay">0.00</span></div>
+        
+        <div id="status">⏸️ Ad Paused! Stay on Page.</div>
         
         <div id="pContainer" class="progress-container">
             <div id="pBar" class="progress-bar"></div>
         </div>
 
-        <div id="captchaSection" class="hidden" style="margin-bottom:15px;">
-            <p id="captchaQuestion" style="font-weight:bold; color:var(--primary);"></p>
-            <input type="number" id="captchaInput" placeholder="Answer?">
+        <div id="captchaBox" class="hidden" style="border: 1px dashed var(--primary); padding: 15px; border-radius: 15px; margin-bottom: 15px;">
+            <p id="qText" style="font-weight:bold;"></p>
+            <input type="number" id="cInput" placeholder="Answer?">
             <button class="btn btn-blue" onclick="verifyCaptcha()">Claim ₹0.50</button>
         </div>
 
         <button class="btn btn-blue" id="adBtn" onclick="startAd()">Watch Ad (30s)</button>
-        <button class="btn btn-red" id="withdrawBtn" onclick="showWithdraw()">Withdraw Money</button>
-        <button class="btn btn-rules" onclick="showRules()">Read App Rules (Niyam)</button>
-    </div>
-
-    <div id="rulesSection" class="card hidden">
-        <h2 style="color: var(--primary);">App Rules</h2>
-        <div class="rules-list">
-            1. Ek user sirf ek hi account bana sakta hai.<br>
-            2. Ad ke waqt tab change karna sakht mana hai, timer ruk jayega.<br>
-            3. Galat Captcha bharne par reward nahi milega.<br>
-            4. Withdrawal request sirf working days mein process hoti hai.<br>
-            5. Kisi bhi tarah ki cheating karne par account block ho sakta hai.
-        </div>
-        <button class="btn btn-blue" onclick="backToDashFromRules()">I Understand</button>
+        <button class="btn btn-red" id="wBtn" onclick="showWithdraw()">Withdraw</button>
+        <button class="btn btn-gray" onclick="showRules()">App Rules (Niyam)</button>
     </div>
 
     <div id="withdrawSection" class="card hidden">
         <h2>Withdrawal</h2>
-        <p class="warning-text">⚠️ Time: 24 se 48 Ghante lag sakte hain</p>
-        <div class="rules-list" style="margin-bottom:10px;">
-            • Minimum ₹200 withdrawal.<br>
-            • Har withdrawal par ₹5 charge kategi.<br>
-            • UPI ID bilkul sahi daalein.
+        <p style="font-size: 11px; color: #ffbc00;">Processing Time: 24 to 48 Hours</p>
+        <div class="rules-list">
+            • Minimum ₹200 | Fee: ₹10 Charge<br>
+            • UPI ID galat hui toh paise nahi milenge.
         </div>
-        <select id="withdrawAmount">
-            <option value="200">₹200 (Charge ₹5)</option>
-            <option value="500">₹500 (Charge ₹5)</option>
-            <option value="1000">₹1000 (Charge ₹5)</option>
+        <select id="wAmount">
+            <option value="200">Minimum - ₹200</option>
+            <option value="500">Medium - ₹500</option>
+            <option value="1000">Maximum - ₹1000</option>
         </select>
-        <input type="text" id="upiId" placeholder="Enter UPI ID (e.g. abc@ybl)">
-        <button class="btn btn-blue" onclick="processWithdraw()">Confirm Transfer</button>
-        <button class="btn" style="background:#444; color:white;" onclick="backToDash()">Cancel</button>
+        <input type="text" id="upiId" placeholder="Enter UPI ID (e.g. name@upi)">
+        <button class="btn btn-blue" onclick="processWithdraw()">Confirm Withdrawal</button>
+        <button class="btn btn-gray" onclick="backToDash()">Back</button>
+    </div>
+
+    <div id="rulesSection" class="card hidden">
+        <h2>System Rules</h2>
+        <div class="rules-list">
+            1. Ad ke waqt tab change karne par timer ruk jayega.<br>
+            2. Har ad ke baad Math Captcha dena zaroori hai.<br>
+            3. Withdrawal mein 24-48 ghante ka samay lagta hai.<br>
+            4. Har withdrawal par ₹5 service charge kategi.<br>
+            5. Ek phone par ek hi account allow hai.
+        </div>
+        <button class="btn btn-blue" onclick="backToDash()">I Agree</button>
     </div>
 
     <script>
-        let balance = 0.00;
-        let isPaused = false;
-        let currentWidth = 0;
-        let captchaAnswer = 0;
+        let balance = 0.00, isPaused = false, currentWidth = 0, cAnswer = 0, adInterval;
 
         function handleLogin() {
             const email = document.getElementById('userEmail').value;
@@ -93,57 +91,67 @@
             if(email.includes('@') && phone.length >= 10) {
                 document.getElementById('loginSection').classList.add('hidden');
                 document.getElementById('dashboardSection').classList.remove('hidden');
-            } else { alert("Error: Email or Phone is wrong!"); }
+            } else { alert("Invalid Login Details!"); }
         }
 
         function startAd() {
             document.getElementById('adBtn').disabled = true;
-            document.getElementById('withdrawBtn').classList.add('hidden');
+            document.getElementById('wBtn').classList.add('hidden');
             document.getElementById('pContainer').style.display = 'block';
-            runTimer();
+            runAdTimer();
         }
 
-        function runTimer() {
-            let timer = setInterval(() => {
+        function runAdTimer() {
+            adInterval = setInterval(() => {
                 if (!isPaused) {
                     currentWidth += 1;
                     document.getElementById('pBar').style.width = currentWidth + '%';
                     if (currentWidth >= 100) {
-                        clearInterval(timer);
+                        clearInterval(adInterval);
                         showCaptcha();
                     }
                 }
-            }, 300); 
+            }, 300); // 30 Seconds logic
         }
 
         function showCaptcha() {
             const n1 = Math.floor(Math.random() * 9) + 1;
             const n2 = Math.floor(Math.random() * 9) + 1;
-            captchaAnswer = n1 + n2;
-            document.getElementById('captchaQuestion').innerText = `Security: ${n1} + ${n2} = ?`;
-            document.getElementById('captchaSection').classList.remove('hidden');
+            cAnswer = n1 + n2;
+            document.getElementById('qText').innerText = `Human Verify: ${n1} + ${n2} = ?`;
             document.getElementById('pContainer').style.display = 'none';
+            document.getElementById('captchaBox').classList.remove('hidden');
         }
 
         function verifyCaptcha() {
-            const ans = document.getElementById('captchaInput').value;
-            if (parseInt(ans) === captchaAnswer) {
+            const userAns = document.getElementById('cInput').value;
+            if (parseInt(userAns) === cAnswer) {
                 balance += 0.50;
                 document.getElementById('balDisplay').innerText = balance.toFixed(2);
-                alert("Success! ₹0.50 added.");
-            } else { alert("Wrong Answer! No reward."); }
-            resetUI();
+                alert("Verified! ₹0.50 Added.");
+            } else { alert("Wrong Answer! Reward Failed."); }
+            resetAdSystem();
         }
 
-        function resetUI() {
+        function resetAdSystem() {
             currentWidth = 0;
-            document.getElementById('captchaSection').classList.add('hidden');
-            document.getElementById('captchaInput').value = "";
+            document.getElementById('pBar').style.width = '0%';
+            document.getElementById('captchaBox').classList.add('hidden');
+            document.getElementById('cInput').value = "";
             document.getElementById('adBtn').disabled = false;
-            document.getElementById('withdrawBtn').classList.remove('hidden');
+            document.getElementById('wBtn').classList.remove('hidden');
         }
 
-        document.addEventListener("visibilitychange", () => { isPaused = !!document.hidden; });
+        // SECURITY: PAUSE IF USER LEAVES WEB
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) {
+                isPaused = true;
+                document.getElementById('status').style.display = 'block';
+            } else {
+                isPaused = false;
+                document.getElementById('status').style.display = 'none';
+            }
+        });
 
         function showWithdraw() {
             document.getElementById('dashboardSection').classList.add('hidden');
@@ -155,26 +163,20 @@
         }
         function backToDash() {
             document.getElementById('withdrawSection').classList.add('hidden');
-            document.getElementById('dashboardSection').classList.remove('hidden');
-        }
-        function backToDashFromRules() {
             document.getElementById('rulesSection').classList.add('hidden');
             document.getElementById('dashboardSection').classList.remove('hidden');
         }
 
         function processWithdraw() {
             const upi = document.getElementById('upiId').value;
-            const amount = parseInt(document.getElementById('withdrawAmount').value);
-            const total = amount + 5;
-
-            if(!upi.includes('@')) { alert("Please enter valid UPI ID!"); return; }
-
-            if (balance < total) {
-                alert("Insufficient! You need ₹" + total + " (Balance + ₹5 Charge)");
+            const amt = parseInt(document.getElementById('wAmount').value);
+            if(!upi.includes('@')) { alert("Enter Valid UPI ID!"); return; }
+            if (balance < (amt + 5)) {
+                alert("Insufficient Balance! Need ₹" + (amt+5) + " (Amt + ₹5 Fee)");
             } else {
-                balance -= total;
+                balance -= (amt + 5);
                 document.getElementById('balDisplay').innerText = balance.toFixed(2);
-                alert("Request Submitted! Paisa 24-48 ghante mein aapke UPI par bhej diya jayega.");
+                alert("Request Sent! Paisa 24-48 ghante mein credit hoga.");
                 backToDash();
             }
         }
