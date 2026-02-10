@@ -3,182 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProEarn - Professional Earning</title>
+    <title>ProRewards - Get Free Redeem Codes</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #10b981; --secondary: #3b82f6; --bg: #f3f4f6; --white: #ffffff; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; user-select: none; }
+        :root { --primary: #8b5cf6; --secondary: #ec4899; --bg: #0f172a; --card: #1e293b; --white: #ffffff; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: white; margin: 0; padding-bottom: 80px; user-select: none; }
         
-        #timerBox { 
-            position: fixed; top: 15px; right: 15px; background: #ef4444; 
-            color: white; padding: 10px 18px; border-radius: 30px; font-weight: bold; 
-            z-index: 9999; display: none; border: 2px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
+        /* CIRCULAR TIMER */
+        #timerContainer { position: fixed; top: 20px; right: 20px; width: 45px; height: 45px; display: none; z-index: 10000; }
+        #timerCircle { width: 100%; height: 100%; border-radius: 50%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border: 3px solid var(--primary); }
 
-        .page { display: none; padding: 20px; animation: slideUp 0.4s ease; flex-direction: column; align-items: center; }
-        .active-page { display: flex; }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        
-        .card { background: var(--white); border-radius: 24px; padding: 20px; width: 90%; max-width: 380px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 15px; text-align: center; border: 1px solid #f0f0f0; }
-        .bal-card { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; }
-        
-        .btn-main { background: var(--primary); color: white; border: none; padding: 16px; border-radius: 16px; width: 100%; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.3s; }
-        .btn-main:disabled { background: #d1d5db; cursor: not-allowed; }
+        .page { display: none; padding: 20px; flex-direction: column; align-items: center; }
+        .active-page { display: flex; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* ADVICE SECTION STYLE */
-        .advice-box { background: #eff6ff; border-left: 5px solid #3b82f6; padding: 15px; border-radius: 10px; text-align: left; margin-bottom: 15px; font-size: 13px; }
-        .advice-box i { color: #3b82f6; margin-right: 8px; }
+        .card { background: var(--card); border-radius: 20px; padding: 20px; width: 90%; max-width: 380px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); margin-bottom: 15px; text-align: center; }
+        .coin-card { background: linear-gradient(135deg, #8b5cf6, #ec4899); }
 
-        .hot-offer { background: #fff7ed; border: 1px dashed #f97316; padding: 15px; border-radius: 15px; display: flex; align-items: center; cursor: pointer; }
+        .btn-main { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; transition: 0.3s; }
+        .btn-main:active { transform: scale(0.95); }
+        .btn-main:disabled { background: #475569; }
 
-        .nav-bar { position: fixed; bottom: 0; width: 100%; background: var(--white); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #e5e7eb; }
-        .nav-item { color: #9ca3af; font-size: 11px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        /* REDEEM STORE MODIFIED */
+        .store-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; margin-top: 10px; }
+        .store-item { background: var(--card); border: 1px solid #334155; padding: 15px; border-radius: 18px; text-align: center; transition: 0.3s; }
+        .store-item:hover { border-color: var(--primary); }
+        .store-item i { font-size: 35px; margin-bottom: 8px; display: block; }
+        .coin-tag { background: rgba(251, 191, 36, 0.1); padding: 5px 10px; border-radius: 8px; font-size: 12px; color: #fbbf24; font-weight: bold; display: inline-block; margin: 8px 0; }
+
+        .nav-bar { position: fixed; bottom: 0; width: 100%; background: #1e293b; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #334155; }
+        .nav-item { color: #94a3b8; font-size: 11px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         .nav-item.active { color: var(--primary); }
     </style>
 </head>
 <body onload="initApp()">
 
-    <div id="timerBox">Wait: <span id="secs">30</span>s</div>
+    <div id="timerContainer"><div id="timerCircle">30</div></div>
 
     <div id="loginPage" class="page active-page">
-        <h1 style="color: #1f2937; margin-top:50px;">ProEarn</h1>
+        <h1 style="margin-top:80px; color:var(--primary);">ProRewards</h1>
+        <p style="opacity: 0.7;">Login to start earning Play Codes</p>
         <div class="card">
-            <input type="text" id="uField" placeholder="Phone or Email">
-            <input type="password" id="pField" placeholder="Password">
-            <button class="btn-main" onclick="doLogin()">Login / Signup</button>
+            <input type="text" id="uField" placeholder="Enter Username/Email" style="width:90%; padding:14px; margin-bottom:12px; border-radius:10px; border:none; background:#334155; color:white;">
+            <button class="btn-main" onclick="doLogin()">Start Earning</button>
         </div>
     </div>
 
     <div id="home" class="page">
-        <div class="card bal-card">
-            <p style="margin:0; opacity:0.9;">My Wallet</p>
-            <h1 style="margin:10px 0; font-size:42px;">₹<span id="balVal">0.00</span></h1>
-            <div style="font-size:12px; background:rgba(255,255,255,0.2); padding:5px 12px; border-radius:20px;">Ads: <span id="adNum">0</span>/10</div>
+        <div class="card coin-card">
+            <p style="margin:0; font-size:14px; opacity: 0.9;">Available Balance</p>
+            <h1 style="margin:5px 0; font-size:48px;"><i class="fas fa-coins" style="color:#fbbf24;"></i> <span id="coinVal">0</span></h1>
+            <p style="font-size:11px; background: rgba(0,0,0,0.2); padding: 4px 10px; border-radius: 20px; display: inline-block;">100 Coins = ₹1 Value</p>
         </div>
-
         <div class="card">
-            <div class="advice-box">
-                <b><i class="fas fa-info-circle"></i> How to Earn?</b><br>
-                1. Click "Watch Ad" to earn ₹0.10.<br>
-                2. After 10 ads, open the Bonus Chest.<br>
-                3. Complete Mega Tasks for high rewards.<br>
-                4. Invite friends for ₹1.00 bonus.
-            </div>
-            
-            <button class="btn-main" id="adBtn" onclick="startAd()">Watch Ad (₹0.10)</button>
-            <button class="btn-main" id="chestBtn" onclick="claimChest()" style="display:none; background:#f59e0b;">🎁 OPEN CHEST</button>
+            <button class="btn-main" id="adBtn" onclick="startAd()">Watch Ad (+10 Coins)</button>
+            <p id="adCountText" style="font-size:12px; color:#94a3b8; margin-top:10px;">Total Ads Watched: 0</p>
         </div>
     </div>
 
-    <div id="tasks" class="page">
-        <h2>Mega Tasks</h2>
-        <div class="card">
-            <div class="advice-box" style="border-left-color: #f97316; background: #fff7ed;">
-                <b><i class="fas fa-shield-alt"></i> Task Rules:</b><br>
-                - Download app from the link.<br>
-                - Register with new phone number.<br>
-                - Money will be added after verification.
+    <div id="store" class="page">
+        <h2 style="margin-bottom: 5px;">Redeem Store</h2>
+        <p style="font-size: 12px; color: #94a3b8; margin-bottom: 20px;">Get Instant Google Play Codes</p>
+        <div class="store-grid">
+            <div class="store-item">
+                <i class="fab fa-google-play" style="color:#34a853;"></i>
+                <b style="font-size: 14px;">₹10 Code</b><br>
+                <span class="coin-tag">1000 Coins</span>
+                <button class="btn-main" style="padding:10px; font-size:12px;" onclick="redeem(1000, '₹10 Play Code')">Redeem</button>
             </div>
-
-            <div class="hot-offer" onclick="goOffer('YOUR_CPA_LINK_1')">
-                <i class="fas fa-download" style="color:#f97316; font-size:24px; margin-right:15px;"></i>
-                <div style="text-align:left;">
-                    <b style="font-size:14px;">Install App Task</b><br>
-                    <span style="font-size:11px;">Reward: ₹5.00 | New Users Only</span>
-                </div>
+            <div class="store-item">
+                <i class="fab fa-google-play" style="color:#fbbc05;"></i>
+                <b style="font-size: 14px;">₹30 Code</b><br>
+                <span class="coin-tag">3000 Coins</span>
+                <button class="btn-main" style="padding:10px; font-size:12px;" onclick="redeem(3000, '₹30 Play Code')">Redeem</button>
             </div>
-        </div>
-    </div>
-
-    <div id="withdraw" class="page">
-        <h2>Withdrawal</h2>
-        <div class="card" style="text-align:left;">
-            <div class="advice-box" style="border-left-color: #ef4444; background: #fef2f2;">
-                <b><i class="fas fa-exclamation-triangle"></i> Security Note:</b><br>
-                - Don't use VPN or Multiple accounts.<br>
-                - Fake referrals will lead to BAN.
+            <div class="store-item">
+                <i class="fab fa-google-play" style="color:#ea4335;"></i>
+                <b style="font-size: 14px;">₹50 Code</b><br>
+                <span class="coin-tag">5000 Coins</span>
+                <button class="btn-main" style="padding:10px; font-size:12px;" onclick="redeem(5000, '₹50 Play Code')">Redeem</button>
             </div>
-            <select id="wAmount" style="width:100%; padding:12px; margin-bottom:10px;" onchange="updateNet()">
-                <option value="100">₹100</option><option value="200">₹200</option>
-            </select>
-            <p id="netLabel" style="font-weight:bold; color:var(--primary);">Receivable: ₹95.00</p>
-            <input type="text" id="upiField" placeholder="UPI ID">
-            <button class="btn-main" style="margin-top:15px; background:var(--secondary);" onclick="submitPayout()">Redeem Money</button>
+            <div class="store-item">
+                <i class="fab fa-google-play" style="color:#4285f4;"></i>
+                <b style="font-size: 14px;">₹100 Code</b><br>
+                <span class="coin-tag">10000 Coins</span>
+                <button class="btn-main" style="padding:10px; font-size:12px;" onclick="redeem(10000, '₹100 Play Code')">Redeem</button>
+            </div>
         </div>
     </div>
 
     <div id="navbar" class="nav-bar" style="display:none;">
-        <div class="nav-item active" onclick="nav('home', this)"><i class="fas fa-home"></i><span>Home</span></div>
-        <div class="nav-item" onclick="nav('tasks', this)"><i class="fas fa-tasks"></i><span>Tasks</span></div>
-        <div class="nav-item" onclick="nav('withdraw', this)"><i class="fas fa-wallet"></i><span>Wallet</span></div>
+        <div class="nav-item active" onclick="nav('home', this)"><i class="fas fa-home"></i><span>Earn</span></div>
+        <div class="nav-item" onclick="nav('store', this)"><i class="fas fa-gift"></i><span>Redeem</span></div>
     </div>
 
     <script>
-        let balance = parseFloat(localStorage.getItem('pe_bal')) || 0.0;
-        let adCount = parseInt(localStorage.getItem('pe_count')) || 0;
+        let coins = parseInt(localStorage.getItem('pr_coins')) || 0;
+        let adsToday = parseInt(localStorage.getItem('pr_ads')) || 0;
         let adLink = "https://www.effectivegatecpm.com/vughxc0v?key=602f39b05878d3f11c2c26d53e7d5568";
         let timer;
-        let timeLeft = 30;
 
         function initApp() {
-            if(localStorage.getItem('pe_logged')) { showApp(); }
+            if(localStorage.getItem('pr_logged')) { showApp(); }
             updateUI();
         }
 
         function doLogin() {
             let u = document.getElementById('uField').value;
-            if(u.length < 5) { alert("Enter valid details!"); return; }
-            const p = new URLSearchParams(window.location.search);
-            if(p.get('ref') && !localStorage.getItem('pe_logged')) {
-                balance += 1.00;
-            }
-            localStorage.setItem('pe_logged', 'true');
-            saveAll(); showApp();
+            if(u.length < 3) { alert("Please enter a valid name"); return; }
+            localStorage.setItem('pr_logged', 'true');
+            showApp();
         }
 
         function showApp() {
             document.getElementById('loginPage').style.display = 'none';
             document.getElementById('home').classList.add('active-page');
             document.getElementById('navbar').style.display = 'flex';
-            checkChest();
         }
 
         function startAd() {
             window.open(adLink, '_blank');
-            let btn = document.getElementById('adBtn'), tBox = document.getElementById('timerBox');
-            btn.disabled = true; tBox.style.display = 'block';
-            timeLeft = 30;
+            let btn = document.getElementById('adBtn'), tCont = document.getElementById('timerContainer'), tCirc = document.getElementById('timerCircle');
+            btn.disabled = true; tCont.style.display = 'block';
+            let timeLeft = 30;
+            tCirc.innerText = timeLeft;
+
             timer = setInterval(() => {
-                if (document.hidden) {
-                    alert("Timer Paused! Stay on page.");
-                } else {
+                if (!document.hidden) {
                     timeLeft--;
-                    document.getElementById('secs').innerText = timeLeft;
+                    tCirc.innerText = timeLeft;
                     if(timeLeft <= 0) {
                         clearInterval(timer);
-                        btn.disabled = false; tBox.style.display = 'none';
-                        balance += 0.10; adCount++; saveAll(); checkChest();
-                        alert("₹0.10 Reward Added!");
+                        btn.disabled = false; tCont.style.display = 'none';
+                        coins += 10; adsToday++; save();
+                        alert("🎉 Success! 10 Coins added to your wallet.");
                     }
                 }
             }, 1000);
         }
 
-        function checkChest() {
-            let cb = document.getElementById('chestBtn'), ab = document.getElementById('adBtn');
-            document.getElementById('adNum').innerText = adCount;
-            if(adCount >= 10) { cb.style.display = 'block'; ab.style.display = 'none'; }
-            else { cb.style.display = 'none'; ab.style.display = 'block'; }
+        function redeem(cost, item) {
+            if(coins < cost) { 
+                alert("Insufficient Coins! You need " + (cost - coins) + " more coins for this reward."); 
+            }
+            else {
+                if(confirm("Redeem " + item + " for " + cost + " coins?")) {
+                    coins -= cost; 
+                    save();
+                    alert("✅ Success! Your request for " + item + " is submitted. You will get your code via email/notification within 24-48 hours.");
+                }
+            }
         }
-
-        function claimChest() {
-            let win = (Math.random() * 1.5 + 0.5).toFixed(2);
-            balance += parseFloat(win); adCount = 0; saveAll();
-            alert("🎉 Bonus Won: ₹" + win);
-            checkChest();
-        }
-
-        function goOffer(l) { window.open(adLink, '_blank'); setTimeout(() => { window.open(l, '_blank'); }, 500); }
 
         function nav(id, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
@@ -187,23 +163,16 @@
             el.classList.add('active');
         }
 
-        function updateNet() {
-            let v = parseInt(document.getElementById('wAmount').value);
-            document.getElementById('netLabel').innerText = `Receivable: ₹${(v - (v*0.05)).toFixed(2)}`;
+        function save() {
+            localStorage.setItem('pr_coins', coins);
+            localStorage.setItem('pr_ads', adsToday);
+            updateUI();
         }
 
-        function submitPayout() {
-            let v = parseInt(document.getElementById('wAmount').value);
-            if(balance < v) { alert("Low Balance!"); }
-            else { balance -= v; saveAll(); alert("Request Sent!"); }
+        function updateUI() {
+            document.getElementById('coinVal').innerText = coins;
+            document.getElementById('adCountText').innerText = "Total Ads Watched: " + adsToday;
         }
-
-        function saveAll() { 
-            localStorage.setItem('pe_bal', balance); 
-            localStorage.setItem('pe_count', adCount);
-            updateUI(); 
-        }
-        function updateUI() { document.getElementById('balVal').innerText = balance.toFixed(2); }
     </script>
 </body>
 </html>
