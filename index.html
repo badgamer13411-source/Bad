@@ -3,169 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProEarn - Digital Earning</title>
+    <title>ProEarn - Official</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #28a745; --bg: #f4f7f6; --white: #ffffff; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 70px; }
-        .page { display: none; padding: 20px; animation: fadeIn 0.3s; text-align: center; }
-        .active-page { display: flex; flex-direction: column; align-items: center; }
+        :root { --primary: #28a745; --bg: #f4f7f6; --white: #ffffff; --dark: #333; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 70px; overflow-x: hidden; }
+        
+        /* LOGIN PAGE */
+        .page { display: none; padding: 20px; animation: fadeIn 0.3s; text-align: center; min-height: 80vh; }
+        .active-page { display: flex; flex-direction: column; align-items: center; justify-content: center; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .card { background: var(--white); border-radius: 20px; padding: 25px; width: 90%; max-width: 350px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: 20px; }
-        input { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; }
-        .btn-main { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; }
-        .nav-bar { position: fixed; bottom: 0; width: 100%; background: var(--white); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #eee; }
+        
+        .card { background: var(--white); border-radius: 20px; padding: 25px; width: 90%; max-width: 350px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: 15px; }
+        input, select { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; outline: none; }
+        .btn-main { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-main:disabled { background: #ccc; }
+
+        /* NAVIGATION */
+        .nav-bar { position: fixed; bottom: 0; width: 100%; background: var(--white); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #eee; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
         .nav-item { color: #aaa; font-size: 11px; display: flex; flex-direction: column; align-items: center; cursor: pointer; text-decoration: none; }
         .nav-item.active { color: var(--primary); }
-        #timer { color: red; font-weight: bold; font-size: 18px; margin-bottom: 10px; display: none; }
+        .nav-item i { font-size: 20px; margin-bottom: 4px; }
+
+        /* TIMER & WALLET */
+        #timerBox { color: #d9534f; font-weight: bold; font-size: 18px; margin: 10px 0; display: none; }
+        .bal-card { background: linear-gradient(135deg, #28a745, #1e7e34); color: white; }
+        .rules-text { text-align: left; font-size: 12px; color: #666; padding: 10px; background: #fff3cd; border-radius: 10px; margin-top: 10px; border-left: 4px solid #ffc107; }
     </style>
 </head>
-<body onload="init()">
+<body onload="checkLogin()">
 
     <div id="loginPage" class="page active-page">
-        <h2 style="color:var(--primary);">ProEarn Login</h2>
+        <h2 style="color:var(--primary);"><i class="fas fa-wallet"></i> ProEarn Login</h2>
         <div class="card">
-            <p>Phone or Email se account banayein</p>
-            <input type="text" id="loginUser" placeholder="Phone or Email">
-            <input type="password" id="loginPass" placeholder="Create Password">
-            <button class="btn-main" onclick="handleLogin()">Create Account / Login</button>
+            <p style="font-size:14px; color:#666;">Create account using Phone or Email</p>
+            <input type="text" id="uField" placeholder="Phone or Email">
+            <input type="password" id="pField" placeholder="Create Password">
+            <button class="btn-main" onclick="doLogin()">Create Account / Login</button>
         </div>
     </div>
 
     <div id="home" class="page">
+        <div class="card bal-card">
+            <p style="margin:0; opacity:0.9;">Available Balance</p>
+            <h1 style="margin:10px 0; font-size:40px;">₹<span id="balDisp">0.00</span></h1>
+        </div>
         <div class="card">
-            <p style="color:#666; margin:0;">Total Balance</p>
-            <h1 style="margin:10px 0;">₹<span id="balDisp">0.00</span></h1>
-            <div id="timer">Wait: <span id="secs">30</span>s</div>
-            <button class="btn-main" id="adBtn" onclick="watchAd()">Watch Video Ad (₹0.50)</button>
+            <div id="timerBox">Ad Closing in: <span id="secs">30</span>s</div>
+            <button class="btn-main" id="adBtn" onclick="startAd()">Watch Video Ad (₹0.50)</button>
+            <p style="font-size:11px; color:#999; margin-top:10px;">Daily ads limit: Unlimited</p>
         </div>
     </div>
 
     <div id="invite" class="page">
         <h2>Invite & Earn</h2>
         <div class="card">
-            <i class="fas fa-gift" style="font-size: 50px; color: gold;"></i>
-            <p>Doston ko invite karein aur payein <b>₹5</b> per referral!</p>
-            <button class="btn-main" onclick="shareApp()">Invite on WhatsApp</button>
+            <i class="fas fa-users" style="font-size: 50px; color: var(--primary); margin-bottom:15px;"></i>
+            <p>Invite your friends and get <b>₹5.00</b> reward after their first login!</p>
+            <button class="btn-main" onclick="sendInvite()"><i class="fab fa-whatsapp"></i> Share Link</button>
         </div>
     </div>
 
     <div id="withdraw" class="page">
         <h2>Withdrawal</h2>
         <div class="card">
-            <p style="color:red; font-size:12px;">5% processing fee kategi.</p>
-            <input type="number" id="wAmt" placeholder="Minimum ₹100"> "medium ₹200"> "maximum ₹500">
-            <p id="feeInfo" style="font-size:13px;"></p>
-            <button class="btn-main" onclick="doWithdraw()">Withdraw Now</button>
+            <div class="rules-text">
+                <b>Payment Rules:</b><br>
+                • Minimum withdrawal starts from ₹100.<br>
+                • 5% Service Charge will be deducted.<br>
+                • Payouts take 24-48 hours to process.
+            </div>
+            <select id="wAmt" onchange="updateFee()">
+                <option value="100">₹100</option>
+                <option value="200">₹200</option>
+                <option value="500">₹500</option>
+                <option value="1000">₹1000</option>
+            </select>
+            <p id="feeInfo" style="font-weight:bold; color:var(--primary);">You get: ₹95 (Fee: ₹5)</p>
+            <input type="text" id="upi" placeholder="Enter UPI ID (e.g. name@ybl)">
+            <button class="btn-main" onclick="requestWithdraw()">Confirm Withdrawal</button>
         </div>
     </div>
 
-    <div id="navBar" class="nav-bar" style="display:none;">
-        <div class="nav-item active" onclick="nav('home', this)"><i class="fas fa-home"></i><span>Home</span></div>
-        <div class="nav-item" onclick="nav('invite', this)"><i class="fas fa-users"></i><span>Invite</span></div>
-        <div class="nav-item" onclick="nav('withdraw', this)"><i class="fas fa-wallet"></i><span>Withdraw</span></div>
+    <div id="nav" class="nav-bar" style="display:none;">
+        <div class="nav-item active" onclick="showPage('home', this)"><i class="fas fa-home"></i><span>Home</span></div>
+        <div class="nav-item" onclick="showPage('invite', this)"><i class="fas fa-share-alt"></i><span>Invite</span></div>
+        <div class="nav-item" onclick="showPage('withdraw', this)"><i class="fas fa-wallet"></i><span>Withdraw</span></div>
     </div>
 
     <script>
-        let bal = parseFloat(localStorage.getItem('proEarnBal')) || 0.0;
+        let balance = parseFloat(localStorage.getItem('pe_bal')) || 0.0;
         const adLink = "https://www.effectivegatecpm.com/vughxc0v?key=602f39b05878d3f11c2c26d53e7d5568";
 
-        function init() {
-            if(localStorage.getItem('isLoggedIn')) {
-                showDashboard();
-            }
-            checkReferral();
+        function checkLogin() {
+            if(localStorage.getItem('pe_logged')) { launchDash(); }
         }
 
-  // --- UPDATED LOGIN & REFERRAL REWARD LOGIC ---
-function handleLogin() {
-    let u = document.getElementById('loginUser').value;
-    let p = document.getElementById('loginPass').value;
-    
-    if(u.length > 5 && p.length > 3) {
-        // 1. Account create hote hi check karega koi referral hai ya nahi
-        const urlParams = new URLSearchParams(window.location.search);
-        const refCode = urlParams.get('ref');
+        function doLogin() {
+            let u = document.getElementById('uField').value;
+            let p = document.getElementById('pField').value;
+            if(u.length < 5 || p.length < 4) { alert("Please enter valid details!"); return; }
 
-        // 2. Agar ref code hai aur ye iska pehla login hai
-        if (refCode && !localStorage.getItem('isLoggedIn')) {
-            let inviteReward = 5.00; // Yeh raha aapka ₹5 reward
-            bal += inviteReward;
-            alert("Referral Success! ₹" + inviteReward + " added to your wallet.");
-        }
-
-        // 3. User ko login karado
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('userAccount', u);
-        save(); // Balance save karo
-        showDashboard();
-    } else { 
-        alert("Sahi Details bharein!"); 
-    }
-}
-        }
-
-        function showDashboard() {
-            document.getElementById('loginPage').classList.remove('active-page');
-            document.getElementById('home').classList.add('active-page');
-            document.getElementById('navBar').style.display = 'flex';
-            updateDisp();
-        }
-
-        // --- REFERRAL REWARD (LINE 146) ---
-        function checkReferral() {
+            // REFERRAL CHECK: Only reward if new user joins via link
             const urlParams = new URLSearchParams(window.location.search);
             const ref = urlParams.get('ref');
-            if (ref && !localStorage.getItem('bonusTaken')) {
-                
-                let inviteReward = 5.00; // <--- YAHAN HAI REFERRAL KA 5 RUPYE
-                
-                bal += inviteReward;
-                localStorage.setItem('bonusTaken', 'true');
-                save();
-                alert("Referral Bonus ₹" + inviteReward + " Added!");
+            if(ref && !localStorage.getItem('pe_logged')) {
+                balance += 5.00; // Invite Reward
+                alert("Referral Bonus ₹5 Added!");
             }
+
+            localStorage.setItem('pe_logged', 'true');
+            localStorage.setItem('pe_user', u);
+            saveData();
+            launchDash();
         }
 
-        function nav(id, el) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+        function launchDash() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('home').style.display = 'flex';
+            document.getElementById('nav').style.display = 'flex';
+            updateUI();
+        }
+
+        function showPage(id, el) {
+            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(id).classList.add('active-page');
+            document.getElementById(id).style.display = 'flex';
             el.classList.add('active');
         }
 
-        function watchAd() {
+        function startAd() {
             window.open(adLink, '_blank');
-            let btn = document.getElementById('adBtn'), t = document.getElementById('timer'), s = document.getElementById('secs');
-            btn.disabled = true; t.style.display = 'block';
+            let btn = document.getElementById('adBtn'), tBox = document.getElementById('timerBox'), s = document.getElementById('secs');
+            btn.disabled = true; tBox.style.display = 'block';
             let left = 30;
-            let count = setInterval(() => {
+            let timer = setInterval(() => {
                 left--; s.innerText = left;
                 if(left <= 0) {
-                    clearInterval(count);
-                    btn.disabled = false; t.style.display = 'none';
-                    bal += 0.50; save(); alert("Ad reward ₹0.50 added!");
+                    clearInterval(timer);
+                    btn.disabled = false; tBox.style.display = 'none';
+                    balance += 0.50; saveData(); alert("Success! ₹0.50 added.");
                 }
             }, 1000);
         }
 
-        function shareApp() {
-            let link = window.location.origin + window.location.pathname + "?ref=" + Math.floor(Math.random()*999);
-            window.open("https://api.whatsapp.com/send?text=Bhai ghar baithe kamao! Join ProEarn: " + link);
+        function updateFee() {
+            let amt = parseInt(document.getElementById('wAmt').value);
+            let fee = amt * 0.05;
+            document.getElementById('feeInfo').innerText = `You get: ₹${amt - fee} (Fee: ₹${fee})`;
         }
 
-        function doWithdraw() {
-            let a = document.getElementById('wAmt').value;
-            if(bal < a) { alert("Balance kam hai!"); }
-            else { 
-                let fee = a * 0.05;
-                alert(`Request Sent! ₹${a - fee} (After 5% fee) will be sent to your UPI.`);
-                bal -= a; save();
+        function requestWithdraw() {
+            let amt = parseInt(document.getElementById('wAmt').value);
+            if(balance < amt) { alert("Insufficient Balance!"); }
+            else {
+                balance -= amt; saveData();
+                alert("Withdrawal Request Sent Successfully!");
             }
         }
 
-        function save() { localStorage.setItem('proEarnBal', bal); updateDisp(); }
-        function updateDisp() { document.getElementById('balDisp').innerText = bal.toFixed(2); }
+        function sendInvite() {
+            let link = window.location.origin + window.location.pathname + "?ref=" + Math.floor(Math.random()*9999);
+            window.open("https://api.whatsapp.com/send?text=Bhai, ghar baithe paise kamao! Har ad ke ₹0.50 aur join karte hi ₹5 milenge. Join ProEarn: " + link);
+        }
+
+        function saveData() { localStorage.setItem('pe_bal', balance); updateUI(); }
+        function updateUI() { document.getElementById('balDisp').innerText = balance.toFixed(2); }
     </script>
 </body>
 </html>
