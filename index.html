@@ -3,172 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProEarn - Official</title>
+    <title>ProEarn - Professional Earning</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #28a745; --bg: #f4f7f6; --white: #ffffff; --dark: #333; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 70px; overflow-x: hidden; }
+        :root { --primary: #10b981; --secondary: #3b82f6; --bg: #f3f4f6; --white: #ffffff; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; user-select: none; }
         
-        /* LOGIN PAGE */
-        .page { display: none; padding: 20px; animation: fadeIn 0.3s; text-align: center; min-height: 80vh; }
-        .active-page { display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        .card { background: var(--white); border-radius: 20px; padding: 25px; width: 90%; max-width: 350px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: 15px; }
-        input, select { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; outline: none; }
-        .btn-main { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-main:disabled { background: #ccc; }
+        #timerBox { 
+            position: fixed; top: 15px; right: 15px; background: #ef4444; 
+            color: white; padding: 10px 18px; border-radius: 30px; font-weight: bold; 
+            z-index: 9999; display: none; border: 2px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
 
-        /* NAVIGATION */
-        .nav-bar { position: fixed; bottom: 0; width: 100%; background: var(--white); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #eee; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
-        .nav-item { color: #aaa; font-size: 11px; display: flex; flex-direction: column; align-items: center; cursor: pointer; text-decoration: none; }
+        .page { display: none; padding: 20px; animation: slideUp 0.4s ease; flex-direction: column; align-items: center; }
+        .active-page { display: flex; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .card { background: var(--white); border-radius: 24px; padding: 20px; width: 90%; max-width: 380px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 15px; text-align: center; border: 1px solid #f0f0f0; }
+        .bal-card { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; }
+        
+        .btn-main { background: var(--primary); color: white; border: none; padding: 16px; border-radius: 16px; width: 100%; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        .btn-main:disabled { background: #d1d5db; cursor: not-allowed; }
+
+        /* ADVICE SECTION STYLE */
+        .advice-box { background: #eff6ff; border-left: 5px solid #3b82f6; padding: 15px; border-radius: 10px; text-align: left; margin-bottom: 15px; font-size: 13px; }
+        .advice-box i { color: #3b82f6; margin-right: 8px; }
+
+        .hot-offer { background: #fff7ed; border: 1px dashed #f97316; padding: 15px; border-radius: 15px; display: flex; align-items: center; cursor: pointer; }
+
+        .nav-bar { position: fixed; bottom: 0; width: 100%; background: var(--white); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #e5e7eb; }
+        .nav-item { color: #9ca3af; font-size: 11px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         .nav-item.active { color: var(--primary); }
-        .nav-item i { font-size: 20px; margin-bottom: 4px; }
-
-        /* TIMER & WALLET */
-        #timerBox { color: #d9534f; font-weight: bold; font-size: 18px; margin: 10px 0; display: none; }
-        .bal-card { background: linear-gradient(135deg, #28a745, #1e7e34); color: white; }
-        .rules-text { text-align: left; font-size: 12px; color: #666; padding: 10px; background: #fff3cd; border-radius: 10px; margin-top: 10px; border-left: 4px solid #ffc107; }
     </style>
 </head>
-<body onload="checkLogin()">
+<body onload="initApp()">
+
+    <div id="timerBox">Wait: <span id="secs">30</span>s</div>
 
     <div id="loginPage" class="page active-page">
-        <h2 style="color:var(--primary);"><i class="fas fa-wallet"></i> ProEarn Login</h2>
+        <h1 style="color: #1f2937; margin-top:50px;">ProEarn</h1>
         <div class="card">
-            <p style="font-size:14px; color:#666;">Create account using Phone or Email</p>
             <input type="text" id="uField" placeholder="Phone or Email">
-            <input type="password" id="pField" placeholder="Create Password">
-            <button class="btn-main" onclick="doLogin()">Create Account / Login</button>
+            <input type="password" id="pField" placeholder="Password">
+            <button class="btn-main" onclick="doLogin()">Login / Signup</button>
         </div>
     </div>
 
     <div id="home" class="page">
         <div class="card bal-card">
-            <p style="margin:0; opacity:0.9;">Available Balance</p>
-            <h1 style="margin:10px 0; font-size:40px;">₹<span id="balDisp">0.00</span></h1>
+            <p style="margin:0; opacity:0.9;">My Wallet</p>
+            <h1 style="margin:10px 0; font-size:42px;">₹<span id="balVal">0.00</span></h1>
+            <div style="font-size:12px; background:rgba(255,255,255,0.2); padding:5px 12px; border-radius:20px;">Ads: <span id="adNum">0</span>/10</div>
         </div>
+
         <div class="card">
-            <div id="timerBox">Ad Closing in: <span id="secs">30</span>s</div>
-            <button class="btn-main" id="adBtn" onclick="startAd()">Watch Video Ad (₹0.50)</button>
-            <p style="font-size:11px; color:#999; margin-top:10px;">Daily ads limit: Unlimited</p>
+            <div class="advice-box">
+                <b><i class="fas fa-info-circle"></i> How to Earn?</b><br>
+                1. Click "Watch Ad" to earn ₹0.10.<br>
+                2. After 10 ads, open the Bonus Chest.<br>
+                3. Complete Mega Tasks for high rewards.<br>
+                4. Invite friends for ₹1.00 bonus.
+            </div>
+            
+            <button class="btn-main" id="adBtn" onclick="startAd()">Watch Ad (₹0.10)</button>
+            <button class="btn-main" id="chestBtn" onclick="claimChest()" style="display:none; background:#f59e0b;">🎁 OPEN CHEST</button>
         </div>
     </div>
 
-    <div id="invite" class="page">
-        <h2>Invite & Earn</h2>
+    <div id="tasks" class="page">
+        <h2>Mega Tasks</h2>
         <div class="card">
-            <i class="fas fa-users" style="font-size: 50px; color: var(--primary); margin-bottom:15px;"></i>
-            <p>Invite your friends and get <b>₹5.00</b> reward after their first login!</p>
-            <button class="btn-main" onclick="sendInvite()"><i class="fab fa-whatsapp"></i> Share Link</button>
+            <div class="advice-box" style="border-left-color: #f97316; background: #fff7ed;">
+                <b><i class="fas fa-shield-alt"></i> Task Rules:</b><br>
+                - Download app from the link.<br>
+                - Register with new phone number.<br>
+                - Money will be added after verification.
+            </div>
+
+            <div class="hot-offer" onclick="goOffer('YOUR_CPA_LINK_1')">
+                <i class="fas fa-download" style="color:#f97316; font-size:24px; margin-right:15px;"></i>
+                <div style="text-align:left;">
+                    <b style="font-size:14px;">Install App Task</b><br>
+                    <span style="font-size:11px;">Reward: ₹5.00 | New Users Only</span>
+                </div>
+            </div>
         </div>
     </div>
 
     <div id="withdraw" class="page">
         <h2>Withdrawal</h2>
-        <div class="card">
-            <div class="rules-text">
-                <b>Payment Rules:</b><br>
-                • Minimum withdrawal starts from ₹100.<br>
-                • 5% Service Charge will be deducted.<br>
-                • Payouts take 24-48 hours to process.
+        <div class="card" style="text-align:left;">
+            <div class="advice-box" style="border-left-color: #ef4444; background: #fef2f2;">
+                <b><i class="fas fa-exclamation-triangle"></i> Security Note:</b><br>
+                - Don't use VPN or Multiple accounts.<br>
+                - Fake referrals will lead to BAN.
             </div>
-            <select id="wAmt" onchange="updateFee()">
-                <option value="100">₹100</option>
-                <option value="200">₹200</option>
-                <option value="500">₹500</option>
-                <option value="1000">₹1000</option>
+            <select id="wAmount" style="width:100%; padding:12px; margin-bottom:10px;" onchange="updateNet()">
+                <option value="100">₹100</option><option value="200">₹200</option>
             </select>
-            <p id="feeInfo" style="font-weight:bold; color:var(--primary);">You get: ₹95 (Fee: ₹5)</p>
-            <input type="text" id="upi" placeholder="Enter UPI ID (e.g. name@ybl)">
-            <button class="btn-main" onclick="requestWithdraw()">Confirm Withdrawal</button>
+            <p id="netLabel" style="font-weight:bold; color:var(--primary);">Receivable: ₹95.00</p>
+            <input type="text" id="upiField" placeholder="UPI ID">
+            <button class="btn-main" style="margin-top:15px; background:var(--secondary);" onclick="submitPayout()">Redeem Money</button>
         </div>
     </div>
 
-    <div id="nav" class="nav-bar" style="display:none;">
-        <div class="nav-item active" onclick="showPage('home', this)"><i class="fas fa-home"></i><span>Home</span></div>
-        <div class="nav-item" onclick="showPage('invite', this)"><i class="fas fa-share-alt"></i><span>Invite</span></div>
-        <div class="nav-item" onclick="showPage('withdraw', this)"><i class="fas fa-wallet"></i><span>Withdraw</span></div>
+    <div id="navbar" class="nav-bar" style="display:none;">
+        <div class="nav-item active" onclick="nav('home', this)"><i class="fas fa-home"></i><span>Home</span></div>
+        <div class="nav-item" onclick="nav('tasks', this)"><i class="fas fa-tasks"></i><span>Tasks</span></div>
+        <div class="nav-item" onclick="nav('withdraw', this)"><i class="fas fa-wallet"></i><span>Wallet</span></div>
     </div>
 
     <script>
         let balance = parseFloat(localStorage.getItem('pe_bal')) || 0.0;
-        const adLink = "https://www.effectivegatecpm.com/vughxc0v?key=602f39b05878d3f11c2c26d53e7d5568";
+        let adCount = parseInt(localStorage.getItem('pe_count')) || 0;
+        let adLink = "https://www.effectivegatecpm.com/vughxc0v?key=602f39b05878d3f11c2c26d53e7d5568";
+        let timer;
+        let timeLeft = 30;
 
-        function checkLogin() {
-            if(localStorage.getItem('pe_logged')) { launchDash(); }
+        function initApp() {
+            if(localStorage.getItem('pe_logged')) { showApp(); }
+            updateUI();
         }
 
         function doLogin() {
             let u = document.getElementById('uField').value;
-            let p = document.getElementById('pField').value;
-            if(u.length < 5 || p.length < 4) { alert("Please enter valid details!"); return; }
-
-            // REFERRAL CHECK: Only reward if new user joins via link
-            const urlParams = new URLSearchParams(window.location.search);
-            const ref = urlParams.get('ref');
-            if(ref && !localStorage.getItem('pe_logged')) {
-                balance += 5.00; // Invite Reward
-                alert("Referral Bonus ₹5 Added!");
+            if(u.length < 5) { alert("Enter valid details!"); return; }
+            const p = new URLSearchParams(window.location.search);
+            if(p.get('ref') && !localStorage.getItem('pe_logged')) {
+                balance += 1.00;
             }
-
             localStorage.setItem('pe_logged', 'true');
-            localStorage.setItem('pe_user', u);
-            saveData();
-            launchDash();
+            saveAll(); showApp();
         }
 
-        function launchDash() {
+        function showApp() {
             document.getElementById('loginPage').style.display = 'none';
-            document.getElementById('home').style.display = 'flex';
-            document.getElementById('nav').style.display = 'flex';
-            updateUI();
-        }
-
-        function showPage(id, el) {
-            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(id).style.display = 'flex';
-            el.classList.add('active');
+            document.getElementById('home').classList.add('active-page');
+            document.getElementById('navbar').style.display = 'flex';
+            checkChest();
         }
 
         function startAd() {
             window.open(adLink, '_blank');
-            let btn = document.getElementById('adBtn'), tBox = document.getElementById('timerBox'), s = document.getElementById('secs');
+            let btn = document.getElementById('adBtn'), tBox = document.getElementById('timerBox');
             btn.disabled = true; tBox.style.display = 'block';
-            let left = 30;
-            let timer = setInterval(() => {
-                left--; s.innerText = left;
-                if(left <= 0) {
-                    clearInterval(timer);
-                    btn.disabled = false; tBox.style.display = 'none';
-                    balance += 0.50; saveData(); alert("Success! ₹0.50 added.");
+            timeLeft = 30;
+            timer = setInterval(() => {
+                if (document.hidden) {
+                    alert("Timer Paused! Stay on page.");
+                } else {
+                    timeLeft--;
+                    document.getElementById('secs').innerText = timeLeft;
+                    if(timeLeft <= 0) {
+                        clearInterval(timer);
+                        btn.disabled = false; tBox.style.display = 'none';
+                        balance += 0.10; adCount++; saveAll(); checkChest();
+                        alert("₹0.10 Reward Added!");
+                    }
                 }
             }, 1000);
         }
 
-        function updateFee() {
-            let amt = parseInt(document.getElementById('wAmt').value);
-            let fee = amt * 0.05;
-            document.getElementById('feeInfo').innerText = `You get: ₹${amt - fee} (Fee: ₹${fee})`;
+        function checkChest() {
+            let cb = document.getElementById('chestBtn'), ab = document.getElementById('adBtn');
+            document.getElementById('adNum').innerText = adCount;
+            if(adCount >= 10) { cb.style.display = 'block'; ab.style.display = 'none'; }
+            else { cb.style.display = 'none'; ab.style.display = 'block'; }
         }
 
-        function requestWithdraw() {
-            let amt = parseInt(document.getElementById('wAmt').value);
-            if(balance < amt) { alert("Insufficient Balance!"); }
-            else {
-                balance -= amt; saveData();
-                alert("Withdrawal Request Sent Successfully!");
-            }
+        function claimChest() {
+            let win = (Math.random() * 1.5 + 0.5).toFixed(2);
+            balance += parseFloat(win); adCount = 0; saveAll();
+            alert("🎉 Bonus Won: ₹" + win);
+            checkChest();
         }
 
-        function sendInvite() {
-            let link = window.location.origin + window.location.pathname + "?ref=" + Math.floor(Math.random()*9999);
-            window.open("https://api.whatsapp.com/send?text=Bhai, ghar baithe paise kamao! Har ad ke ₹0.50 aur join karte hi ₹5 milenge. Join ProEarn: " + link);
+        function goOffer(l) { window.open(adLink, '_blank'); setTimeout(() => { window.open(l, '_blank'); }, 500); }
+
+        function nav(id, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active-page');
+            el.classList.add('active');
         }
 
-        function saveData() { localStorage.setItem('pe_bal', balance); updateUI(); }
-        function updateUI() { document.getElementById('balDisp').innerText = balance.toFixed(2); }
+        function updateNet() {
+            let v = parseInt(document.getElementById('wAmount').value);
+            document.getElementById('netLabel').innerText = `Receivable: ₹${(v - (v*0.05)).toFixed(2)}`;
+        }
+
+        function submitPayout() {
+            let v = parseInt(document.getElementById('wAmount').value);
+            if(balance < v) { alert("Low Balance!"); }
+            else { balance -= v; saveAll(); alert("Request Sent!"); }
+        }
+
+        function saveAll() { 
+            localStorage.setItem('pe_bal', balance); 
+            localStorage.setItem('pe_count', adCount);
+            updateUI(); 
+        }
+        function updateUI() { document.getElementById('balVal').innerText = balance.toFixed(2); }
     </script>
 </body>
 </html>
