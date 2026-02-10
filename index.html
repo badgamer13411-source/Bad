@@ -4,133 +4,147 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="R8ngVXj9NJWcmV8qsFQggnrcJjnSdFsS55-0uHT4fms" />
-    <title>ProEarn Official - Safe & Secure</title>
+    <title>ProEarn - Share & Earn</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #00ff00; --bg: #0a0a0a; --card: #161616; --blue: #007bff; }
-        body { font-family: 'Poppins', sans-serif; background: var(--bg); color: white; margin: 0; text-align: center; }
-        .page { display: none; padding: 20px; min-height: 100vh; flex-direction: column; align-items: center; justify-content: center; }
-        .active { display: flex; }
-        .card { background: var(--card); padding: 30px; border-radius: 25px; width: 90%; max-width: 350px; border: 1px solid #333; position: relative; }
-        input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #444; background: #222; color: white; }
-        .btn { width: 100%; padding: 15px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 16px; transition: 0.3s; }
-        .btn-blue { background: var(--blue); color: white; }
-        .btn:disabled { background: #444; cursor: not-allowed; }
-        .balance { font-size: 40px; color: var(--primary); font-weight: bold; margin: 20px 0; }
-        #timerDisplay { position: absolute; top: 15px; right: 15px; background: rgba(255, 0, 0, 0.8); padding: 5px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; display: none; border: 1px solid white; }
-        .progress-bar { width: 0%; height: 8px; background: var(--primary); border-radius: 5px; transition: 1s linear; margin-top: 10px; }
+        :root { --primary: #28a745; --bg: #f8f9fa; --dark: #343a40; --white: #ffffff; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding-bottom: 75px; }
+        
+        .header { background: var(--white); padding: 15px; text-align: left; font-weight: bold; font-size: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+        
+        .page { display: none; padding: 20px; animation: fadeIn 0.3s; }
+        .active-page { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .card { background: var(--white); border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; }
+        .balance-amount { font-size: 32px; font-weight: bold; color: var(--dark); margin: 10px 0; }
+        
+        .btn-main { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 10px; font-size: 16px; font-weight: bold; width: 100%; cursor: pointer; }
+        
+        /* BOTTOM NAVIGATION */
+        .nav-bar { position: fixed; bottom: 0; width: 100%; background: var(--white); display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); border-top-left-radius: 20px; border-top-right-radius: 20px; }
+        .nav-item { color: #aaa; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .nav-item i { font-size: 22px; margin-bottom: 4px; }
+        .nav-item.active { color: var(--primary); }
+
+        input, select { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; }
+        .share-box { background: #e9f7ef; border: 2px dashed var(--primary); padding: 15px; border-radius: 10px; margin-top: 15px; }
     </style>
 </head>
 <body>
 
-    <div id="homePage" class="page active">
-        <h1 style="color: var(--primary);">ProEarn</h1>
-        <p>Wallet Balance is Saved Automatically! 🔒</p>
-        <img src="https://cdn-icons-png.flaticon.com/512/2489/2489756.png" width="120" style="margin: 20px;">
-        <button class="btn btn-blue" onclick="checkExistingUser()">Get Started</button>
+    <div class="header">
+        <span>ProEarn</span>
+        <i class="fas fa-user-circle" style="color: #28a745;"></i>
     </div>
 
-    <div id="loginPage" class="page">
+    <div id="home" class="page active-page">
         <div class="card">
-            <h2>Login</h2>
-            <input type="email" id="uEmail" placeholder="Email Address">
-            <input type="password" id="uPass" placeholder="Create Password">
-            <button class="btn btn-blue" onclick="saveLogin()">Next Step</button>
+            <p style="color:#666; margin:0;">Total Wallet Balance</p>
+            <p class="balance-amount">₹<span id="balDisp">0.00</span></p>
+            <button class="btn-main" id="adBtn" onclick="watchAd()">Watch Ad & Earn</button>
+        </div>
+        <div class="card" style="text-align:left;">
+            <p style="font-weight:bold; color:var(--primary);"><i class="fas fa-bullhorn"></i> Important</p>
+            <p style="font-size:13px; color:#444;">Doston ko share karein aur mil kar kamayein!</p>
         </div>
     </div>
 
-    <div id="dashPage" class="page">
+    <div id="rewards" class="page">
+        <h2>Daily Rewards</h2>
+        <div class="card"><p>Daily Check-in: ₹0.10 (Coming Soon)</p></div>
+    </div>
+
+    <div id="share" class="page">
+        <h2>Invite Friends</h2>
         <div class="card">
-            <div id="timerDisplay">Wait: <span id="secs">30</span>s</div>
-            <div style="font-size: 10px; color: var(--primary); margin-top: 10px;">SECURE WALLET ✅</div>
-            <h2>Total Wallet</h2>
-            <div class="balance">₹<span id="balDisp">0.00</span></div>
-            
-            <div id="pCont" style="display:none; background:#333; border-radius:5px; margin-bottom:15px;">
-                <div id="pBar" class="progress-bar"></div>
+            <i class="fas fa-users" style="font-size: 50px; color: var(--primary); margin-bottom: 15px;"></i>
+            <p>Apne doston ko invite karein aur network banayein!</p>
+            <div class="share-box">
+                <p style="font-size: 12px; font-weight: bold; color: #333;" id="siteLink">Loading Link...</p>
+                <button class="btn-main" onclick="shareNow()"><i class="fas fa-share-alt"></i> Share on WhatsApp</button>
             </div>
-            
-            <button class="btn btn-blue" id="adBtn" onclick="watchAd()">Watch Video Ad (₹0.50)</button>
-            <button class="btn" style="background: #ff4444; color:white; margin-top:15px;" onclick="alert('Minimum Withdrawal ₹200')">Withdraw Cash</button>
-            <button class="btn" style="background: #333; color:#aaa; font-size: 10px;" onclick="logout()">Logout / Reset</button>
         </div>
+    </div>
+
+    <div id="withdraw" class="page">
+        <h2>Withdrawal</h2>
+        <div class="card">
+            <p style="color: #d9534f; font-size:13px;">* 5% Admin Fee will be deducted</p>
+            <select id="wAmt" onchange="calcFee()">
+                <option value="200">₹200</option>
+                <option value="500">₹500</option>
+                <option value="1000">₹1000</option>
+            </select>
+            <p id="feeText" style="font-size: 13px; font-weight:bold;">Receivable: ₹190 (Fee: ₹10)</p>
+            <input type="text" id="upi" placeholder="Enter UPI ID">
+            <button class="btn-main" onclick="processWithdraw()">Withdraw Now</button>
+        </div>
+    </div>
+
+    <div class="nav-bar">
+        <div class="nav-item active" onclick="nav('home', this)"><i class="fas fa-home"></i><span>Home</span></div>
+        <div class="nav-item" onclick="nav('rewards', this)"><i class="fas fa-gift"></i><span>Daily</span></div>
+        <div class="nav-item" onclick="nav('share', this)"><i class="fas fa-share-nodes"></i><span>Share</span></div>
+        <div class="nav-item" onclick="nav('withdraw', this)"><i class="fas fa-wallet"></i><span>Withdraw</span></div>
     </div>
 
     <script>
         let bal = parseFloat(localStorage.getItem('proEarnBalance')) || 0.0;
         const myAdLink = "https://www.effectivegatecpm.com/vughxc0v?key=602f39b05878d3f11c2c26d53e7d5568";
+        
+        // Auto-detect your website link
+        document.getElementById('siteLink').innerText = window.location.href;
 
-        // Check if user is already logged in
-        function checkExistingUser() {
-            if(localStorage.getItem('proEarnUser')) {
-                updateBalanceDisplay();
-                showPage('dashPage');
-            } else {
-                showPage('loginPage');
+        function nav(pageId, element) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active-page');
+            element.classList.add('active');
+        }
+
+        async function shareNow() {
+            const shareData = {
+                title: 'ProEarn',
+                text: 'Bhai, is app se ghar baithe paise kamao! Maine abhi earn kiya hai. Try karo:',
+                url: window.location.href
+            };
+            try {
+                await navigator.share(shareData);
+            } catch (err) {
+                // Fallback for browsers that don't support Web Share API
+                window.open(`https://api.whatsapp.com/send?text=${shareData.text} ${shareData.url}`, '_blank');
             }
-        }
-
-        function showPage(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-
-        function saveLogin() {
-            let email = document.getElementById('uEmail').value;
-            if(email.includes('@')) {
-                localStorage.setItem('proEarnUser', email);
-                showPage('dashPage');
-            } else { alert("Valid Email Please!"); }
-        }
-
-        function updateBalanceDisplay() {
-            document.getElementById('balDisp').innerText = bal.toFixed(2);
         }
 
         function watchAd() {
             window.open(myAdLink, '_blank');
             let btn = document.getElementById('adBtn');
-            let timerDiv = document.getElementById('timerDisplay');
-            let secsDisp = document.getElementById('secs');
-            let pBar = document.getElementById('pBar');
-            let pCont = document.getElementById('pCont');
-
             btn.disabled = true;
-            timerDiv.style.display = 'block';
-            pCont.style.display = 'block';
-            
-            let timeLeft = 30;
-            secsDisp.innerText = timeLeft;
-            pBar.style.width = '0%';
-
-            let countdown = setInterval(() => {
-                timeLeft--;
-                secsDisp.innerText = timeLeft;
-                pBar.style.width = (((30 - timeLeft) / 30) * 100) + '%';
-
-                if(timeLeft <= 0) {
-                    clearInterval(countdown);
-                    timerDiv.style.display = 'none';
-                    pCont.style.display = 'none';
-                    btn.disabled = false;
-                    
-                    // SAVE TO LOCALSTORAGE
-                    bal += 0.50;
-                    localStorage.setItem('proEarnBalance', bal);
-                    updateBalanceDisplay();
-                    alert("₹0.50 Saved Safely!");
-                }
-            }, 1000);
+            btn.innerText = "Processing Reward (30s)...";
+            setTimeout(() => {
+                bal += 0.50;
+                localStorage.setItem('proEarnBalance', bal);
+                document.getElementById('balDisp').innerText = bal.toFixed(2);
+                btn.disabled = false;
+                btn.innerText = "Watch Ad & Earn";
+                alert("Success! ₹0.50 added.");
+            }, 30000); // 30 seconds
         }
 
-        function logout() {
-            if(confirm("Logout karne se details clear ho sakti hain. Continue?")) {
-                localStorage.clear();
-                location.reload();
-            }
+        function calcFee() {
+            let amt = parseInt(document.getElementById('wAmt').value);
+            let fee = amt * 0.05;
+            document.getElementById('feeText').innerText = `Receivable: ₹${amt - fee} (Fee: ₹${fee})`;
         }
 
-        // Initial Display
-        updateBalanceDisplay();
+        function processWithdraw() {
+            let amt = parseInt(document.getElementById('wAmt').value);
+            if(bal < (amt + (amt*0.05))) { alert("Insufficient Balance with Fee!"); return; }
+            alert("Withdrawal request submitted for ₹" + amt);
+        }
+
+        document.getElementById('balDisp').innerText = bal.toFixed(2);
     </script>
 </body>
 </html>
