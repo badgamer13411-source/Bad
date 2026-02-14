@@ -3,60 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProRewards - The Ultimate Loot</title>
+    <title>ProRewards - Smart Loot</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #8b5cf6; --success: #10b981; --bg: #0f172a; --card: #1e293b; --gold: #fbbf24; --red: #ef4444; --neon: #22d3ee; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: white; margin: 0; padding-bottom: 100px; user-select: none; }
+        :root { --primary: #8b5cf6; --success: #10b981; --bg: #0f172a; --card: #1e293b; --gold: #fbbf24; --neon: #22d3ee; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: white; margin: 0; padding-bottom: 110px; user-select: none; }
+        .ticker { background: rgba(0,0,0,0.5); font-size: 11px; padding: 5px; color: var(--success); text-align: center; border-bottom: 1px solid #334155; }
         #timerContainer { position: fixed; top: 20px; right: 20px; width: 45px; height: 45px; display: none; z-index: 10000; }
         #timerCircle { width: 100%; height: 100%; border-radius: 50%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border: 3px solid var(--primary); }
         .page { display: none; padding: 20px; flex-direction: column; align-items: center; }
         .active-page { display: flex; animation: slideUp 0.4s ease-out; }
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .card { background: var(--card); border-radius: 20px; padding: 15px; width: 90%; max-width: 400px; text-align: center; margin-bottom: 15px; border: 1px solid #334155; position: relative; }
-        .btn-main { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 8px; transition: 0.3s; }
-        .nav-bar { position: fixed; bottom: 0; width: 100%; background: #1e293b; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #334155; z-index: 1000; }
-        .nav-item { color: #94a3b8; font-size: 11px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-        .nav-item.active { color: var(--primary); }
+        .btn-main { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .grid-tasks { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 400px; }
-        .task-box { background: rgba(255,255,255,0.05); border: 1px solid #334155; padding: 15px; border-radius: 15px; text-align: center; cursor: pointer; }
-        footer { font-size: 10px; color: #64748b; margin-top: 20px; text-align: center; }
-        .legal-link { color: var(--primary); text-decoration: none; margin: 0 5px; cursor: pointer; }
+        .task-box { background: rgba(255,255,255,0.05); border: 1px solid #334155; padding: 12px; border-radius: 15px; text-align: center; cursor: pointer; }
+        .nav-bar { position: fixed; bottom: 0; width: 100%; background: #1e293b; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #334155; z-index: 1000; }
+        .nav-item { color: #94a3b8; font-size: 11px; display: flex; flex-direction: column; align-items: center; }
+        .nav-item.active { color: var(--primary); }
     </style>
 </head>
 <body onload="initApp()">
 
+    <div class="ticker" id="liveTicker">User @Amit99 just redeemed ₹50 UPI Cash!</div>
     <div id="timerContainer"><div id="timerCircle">20</div></div>
 
     <div id="loginPage" class="page active-page">
-        <h1 style="color:var(--primary); margin-top:50px;">ProRewards</h1>
+        <h1 style="color:var(--primary); margin-top:40px;">ProRewards</h1>
         <div class="card">
-            <input type="email" id="email" placeholder="Email" style="width:90%; padding:14px; margin-bottom:12px; border-radius:10px; border:none; background:#334155; color:white;">
-            <input type="password" id="pass" placeholder="Password" style="width:90%; padding:14px; margin-bottom:12px; border-radius:10px; border:none; background:#334155; color:white;">
+            <input type="email" id="email" placeholder="Email" style="width:90%; padding:14px; margin-bottom:12px; border-radius:10px; background:#334155; color:white; border:none;">
+            <input type="password" id="pass" placeholder="Password" style="width:90%; padding:14px; margin-bottom:12px; border-radius:10px; background:#334155; color:white; border:none;">
             <button class="btn-main" onclick="handleAuth('login')">Login</button>
-            <button class="btn-main" style="background:transparent; border:1px solid var(--primary);" onclick="handleAuth('signup')">Create Free Account</button>
+            <p onclick="handleAuth('signup')" style="font-size:12px; margin-top:15px; cursor:pointer;">New User? <span style="color:var(--primary)">Create Account</span></p>
         </div>
     </div>
 
     <div id="home" class="page">
         <div class="card" style="background: linear-gradient(135deg, #8b5cf6, #ec4899); border:none;">
-            <p style="margin:0; opacity:0.8;">My Balance</p>
-            <h1 id="coinDisplay" style="font-size:40px; margin:10px 0;">0 Coins</h1>
+            <p style="margin:0; opacity:0.8; font-size:14px;">Wallet Balance</p>
+            <h1 id="coinDisplay" style="font-size:40px; margin:5px 0;">0 Coins</h1>
         </div>
 
-        <h3 style="align-self: flex-start; margin-left: 5%; color: var(--neon);">🎮 Daily Fun Tasks</h3>
+        <div class="card" style="padding:10px; border-color:var(--success);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:13px;"><i class="fas fa-calendar-check" style="color:var(--success);"></i> Daily Check-in</span>
+                <button id="checkInBtn" class="btn-main" style="width:auto; padding:5px 15px; font-size:12px; background:var(--success);" onclick="dailyCheckIn()">CLAIM</button>
+            </div>
+        </div>
+
         <div class="grid-tasks">
             <div class="task-box" onclick="openGame('treasure')">
-                <i class="fas fa-gem" style="color:var(--neon); font-size:24px;"></i>
+                <i class="fas fa-box-open" style="color:var(--neon); font-size:24px;"></i>
                 <p style="margin:5px 0 0; font-size:12px;">Treasure Box</p>
-                <small style="color:var(--gold);">Every 1 Hr</small>
+                <small style="color:var(--gold);">Ready</small>
             </div>
             <div class="task-box" onclick="openGame('luck')">
-                <i class="fas fa-dice" style="color:var(--gold); font-size:24px;"></i>
-                <p style="margin:5px 0 0; font-size:12px;">Lucky Draw</p>
+                <i class="fas fa-dharmachakra" style="color:var(--gold); font-size:24px;"></i>
+                <p style="margin:5px 0 0; font-size:12px;">Jackpot Draw</p>
                 <small style="color:var(--success);">Win 5000!</small>
             </div>
         </div>
@@ -64,28 +70,20 @@
         <br>
         <div class="card" style="border: 2px solid #60a5fa; background: rgba(96,165,250,0.1);">
             <h3 style="margin:0; color:#60a5fa;">🏃‍♂️ 30 Ads Marathon</h3>
-            <p id="adProgress" style="font-size:13px; color:#94a3b8; margin:8px 0;">Win 400 Coins (Progress: 0/30)</p>
-            <button id="marathonBtn" class="btn-main" style="background:#60a5fa;" onclick="startAdMarathon()">START CHALLENGE</button>
+            <p id="adProgress" style="font-size:13px; color:#94a3b8;">400 Coins (Progress: 0/30)</p>
+            <button id="marathonBtn" class="btn-main" style="background:#60a5fa;" onclick="startAdMarathon()">START ADS</button>
         </div>
 
-        <div class="card" style="border: 1px dashed var(--gold);">
-            <h4 style="margin:0; color:var(--gold);">🚀 Refer & Earn 500</h4>
-            <p style="font-size:11px; margin:5px 0;">Tip: 2 logo ko bulao aur ₹10 paao!</p>
-            <button class="btn-main" style="background:var(--gold); color:black; font-size:12px;" onclick="copyRef()">COPY LINK</button>
-            <input type="hidden" id="refLink">
+        <div style="margin-top:10px;">
+            <p style="font-size:11px; color:#64748b;">Facing issues? <span style="color:var(--primary); cursor:pointer;" onclick="alert('Support: ProRewardsHelp@gmail.com')">Contact Support</span></p>
         </div>
-
-        <footer>
-            <span class="legal-link" onclick="alert('Privacy: Aapka data safe hai.')">Privacy</span> | 
-            <span class="legal-link" onclick="alert('Terms: No cheating allowed.')">Terms</span>
-        </footer>
     </div>
 
     <div id="store" class="page">
-        <h3>Redeem Store</h3>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; width:100%;">
-            <div class="card" style="width:auto;"><p>₹10 Code</p><h4 style="color:var(--gold);">1000 Coins</h4><button class="btn-main" onclick="requestRedeem(1000, '₹10 Play Code')">Redeem</button></div>
-            <div class="card" style="width:auto;"><p>₹50 UPI</p><h4 style="color:var(--gold);">5000 Coins</h4><button class="btn-main" onclick="requestRedeem(5000, '₹50 UPI Cash')">Redeem</button></div>
+        <h3>Redeem Center</h3>
+        <div class="grid-tasks">
+            <div class="card" style="width:auto; margin:0;"><p>₹10 Play Code</p><h4 style="color:var(--gold);">1000 Coins</h4><button class="btn-main" onclick="requestRedeem(1000, '₹10 Play Code')">Redeem</button></div>
+            <div class="card" style="width:auto; margin:0;"><p>₹50 UPI Cash</p><h4 style="color:var(--gold);">5000 Coins</h4><button class="btn-main" onclick="requestRedeem(5000, '₹50 UPI Cash')">Redeem</button></div>
         </div>
         <div id="historyList" style="width:100%; margin-top:20px;"></div>
     </div>
@@ -97,6 +95,9 @@
     </div>
 
     <script>
+        // REPLACE THIS WITH YOUR DIRECT LINK
+        const MY_DIRECT_LINK = "https://www.effectivegatecpm.com/vughxc0v?key=602f39b05878d3f11c2c26d53e7d5568"; 
+
         const firebaseConfig = {
             apiKey: "AIzaSyAougvqQ7AYSBMwhmq_vBPyTtorkQdHdLQ",
             authDomain: "pro-reward-5f92f.firebaseapp.com",
@@ -109,60 +110,65 @@
         const auth = firebase.auth(); const db = firebase.firestore();
         let currentUser = null; let adCount = 0;
 
+        const names = ["@Rajesh99", "@Sahil_Loot", "@Priya_Rewards", "@Sandeep22", "@Rohan_01"];
+        setInterval(() => {
+            const n = names[Math.floor(Math.random()*names.length)];
+            document.getElementById('liveTicker').innerText = `User ${n} just redeemed ₹10 Play Code!`;
+        }, 8000);
+
         function initApp() {
-            auth.onAuthStateChanged(user => { if (user) { currentUser = user; showUI(); loadData(); loadHistory(); document.getElementById('refLink').value = window.location.origin + window.location.pathname + "?ref=" + user.uid; } });
+            auth.onAuthStateChanged(user => { if (user) { currentUser = user; showUI(); loadData(); loadHistory(); } });
         }
 
         async function handleAuth(type) {
             const e = document.getElementById('email').value, p = document.getElementById('pass').value;
-            const refBy = new URLSearchParams(window.location.search).get('ref');
             try {
                 if(type === 'signup') {
                     const res = await auth.createUserWithEmailAndPassword(e, p);
-                    await db.collection('users').doc(res.user.uid).set({ coins: 0, email: e, lastTreasure: 0 });
-                    if(refBy) await db.collection('users').doc(refBy).update({ coins: firebase.firestore.FieldValue.increment(500) });
+                    await db.collection('users').doc(res.user.uid).set({ coins: 0, email: e, lastTreasure: 0, lastCheckIn: 0 });
                 } else { await auth.signInWithEmailAndPassword(e, p); }
-            } catch (err) { alert(err.message); }
+            } catch (err) { alert("Check Credentials"); }
         }
 
         async function loadData() {
             const doc = await db.collection('users').doc(currentUser.uid).get();
-            document.getElementById('coinDisplay').innerText = (doc.data().coins || 0) + " Coins";
-            return doc.data();
-        }
-
-        async function loadHistory() {
-            const snap = await db.collection('withdrawals').where('uid', '==', currentUser.uid).orderBy('date', 'desc').limit(5).get();
-            const container = document.getElementById('historyList'); container.innerHTML = "";
-            snap.forEach(doc => { container.innerHTML += `<div style="background:#1e293b; padding:10px; margin-bottom:5px; border-radius:10px; font-size:12px;">${doc.data().item} - ${doc.data().status}</div>`; });
-        }
-
-        async function openGame(game) {
-            const data = await loadData();
-            if(game === 'treasure') {
-                if(Date.now() - (data.lastTreasure || 0) < 3600000) { alert("1 ghante baad aana!"); return; }
-                startGenericAd(50, true);
-            } else {
-                let win = 0; let r = Math.random() * 1000;
-                if(Math.floor(r) === 777) win = 5000;
-                else if(r > 900) win = 50;
-                else win = Math.floor(Math.random() * 15) + 5;
-                startGenericAd(win, false);
+            const data = doc.data();
+            document.getElementById('coinDisplay').innerText = (data.coins || 0) + " Coins";
+            if(data.lastCheckIn === new Date().toDateString()) {
+                document.getElementById('checkInBtn').disabled = true;
+                document.getElementById('checkInBtn').innerText = "DONE";
             }
         }
 
-        function startGenericAd(reward, isT) {
-            let win = window.open("https://www.effectivegatecpm.com/vughxc0v?key=602f39b05878d3f11c2c26d53e7d5568", '_blank');
+        async function dailyCheckIn() {
+            await db.collection('users').doc(currentUser.uid).update({ 
+                coins: firebase.firestore.FieldValue.increment(10),
+                lastCheckIn: new Date().toDateString() 
+            });
+            loadData(); alert("10 Coins Added!");
+        }
+
+        async function openGame(game) {
+            const d = await db.collection('users').doc(currentUser.uid).get();
+            if(game === 'treasure' && Date.now() - (d.data().lastTreasure || 0) < 3600000) { alert("Wait 1 hr!"); return; }
+            let win = 0; if(game === 'luck') {
+                let r = Math.random()*1000; if(Math.floor(r) === 777) win = 5000; else win = Math.floor(Math.random()*15)+5;
+            } else { win = 50; }
+            startAd(win, game === 'treasure');
+        }
+
+        function startAd(reward, isT) {
+            let w = window.open(MY_DIRECT_LINK, '_blank');
             let t = 20; document.getElementById('timerContainer').style.display = 'block';
             let itv = setInterval(async () => {
-                if (win && !win.closed && document.hidden) {
+                if (w && !w.closed && document.hidden) {
                     t--; document.getElementById('timerCircle').innerText = t;
                     if (t <= 0) {
                         clearInterval(itv); document.getElementById('timerContainer').style.display = 'none';
                         let up = { coins: firebase.firestore.FieldValue.increment(reward) };
                         if(isT) up.lastTreasure = Date.now();
                         await db.collection('users').doc(currentUser.uid).update(up);
-                        loadData(); alert(reward === 5000 ? "JACKPOT! 5000 Coins!" : reward + " Coins mil gaye!");
+                        loadData(); alert(reward + " Coins!");
                     }
                 }
             }, 1000);
@@ -170,35 +176,42 @@
 
         async function startAdMarathon() {
             const btn = document.getElementById('marathonBtn');
-            let mWin = window.open("https://www.effectivegatecpm.com/vughxc0v?key=602f39b05878d3f11c2c26d53e7d5568", '_blank');
-            btn.disabled = true; let time = 20; document.getElementById('timerContainer').style.display = 'block';
-            let timer = setInterval(async () => {
-                if (mWin && !mWin.closed && document.hidden) {
-                    time--; document.getElementById('timerCircle').innerText = time;
-                    if (time <= 0) {
-                        clearInterval(timer); document.getElementById('timerContainer').style.display = 'none';
+            let w = window.open(MY_DIRECT_LINK, '_blank');
+            btn.disabled = true; let t = 20; document.getElementById('timerContainer').style.display = 'block';
+            let itv = setInterval(async () => {
+                if (w && !w.closed && document.hidden) {
+                    t--; document.getElementById('timerCircle').innerText = t;
+                    if (t <= 0) {
+                        clearInterval(itv); document.getElementById('timerContainer').style.display = 'none';
                         adCount++; document.getElementById('adProgress').innerText = `Progress: ${adCount}/30`;
                         if (adCount >= 30) {
                             await db.collection('users').doc(currentUser.uid).update({ coins: firebase.firestore.FieldValue.increment(400) });
-                            loadData(); alert("400 Coins Added!"); adCount = 0; btn.disabled = false;
-                        } else { setTimeout(() => { btn.disabled = false; }, 5000); }
+                            loadData(); adCount = 0; alert("400 Coins Added!");
+                        }
+                        setTimeout(() => btn.disabled = false, 5000);
                     }
                 }
             }, 1000);
         }
 
+        async function loadHistory() {
+            const snap = await db.collection('withdrawals').where('uid', '==', currentUser.uid).orderBy('date', 'desc').limit(3).get();
+            const container = document.getElementById('historyList'); container.innerHTML = "";
+            snap.forEach(doc => { container.innerHTML += `<div style="background:#1e293b; padding:10px; margin-bottom:5px; border-radius:10px; font-size:11px;">${doc.data().item} - ${doc.data().status}</div>`; });
+        }
+
         async function requestRedeem(cost, item) {
-            const d = await loadData(); if(d.coins < cost) { alert("Paisa kam hai!"); return; }
+            const doc = await db.collection('users').doc(currentUser.uid).get();
+            if(doc.data().coins < cost) { alert("Low Balance!"); return; }
             const upi = prompt("Enter UPI:"); if(!upi) return;
             await db.collection('users').doc(currentUser.uid).update({ coins: firebase.firestore.FieldValue.increment(-cost) });
             await db.collection('withdrawals').add({ uid: currentUser.uid, item: item, details: upi, status: 'Pending', date: new Date().toLocaleString() });
-            loadData(); loadHistory(); alert("Request Sent!");
+            loadData(); loadHistory(); alert("Requested!");
         }
 
         function showUI() { document.getElementById('loginPage').style.display = 'none'; document.getElementById('home').classList.add('active-page'); document.getElementById('navbar').style.display = 'flex'; }
         function nav(id, el) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); document.getElementById(id).classList.add('active-page'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
         function logout() { auth.signOut().then(() => location.reload()); }
-        function copyRef() { const c = document.getElementById("refLink"); c.type="text"; c.select(); document.execCommand("copy"); c.type="hidden"; alert("Link Copied!"); }
     </script>
 </body>
 </html>
