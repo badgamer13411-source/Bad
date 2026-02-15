@@ -3,100 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProRewards - Smart Loot</title>
+    <title>ProRewards Master - Earn & Manage</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #8b5cf6; --success: #10b981; --bg: #0f172a; --card: #1e293b; --gold: #fbbf24; --neon: #22d3ee; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: white; margin: 0; padding-bottom: 110px; user-select: none; }
-        .ticker { background: rgba(0,0,0,0.5); font-size: 11px; padding: 5px; color: var(--success); text-align: center; border-bottom: 1px solid #334155; }
-        #timerContainer { position: fixed; top: 20px; right: 20px; width: 45px; height: 45px; display: none; z-index: 10000; }
-        #timerCircle { width: 100%; height: 100%; border-radius: 50%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border: 3px solid var(--primary); }
+        :root { --primary: #8b5cf6; --success: #10b981; --bg: #0f172a; --card: #1e293b; --gold: #fbbf24; --danger: #ef4444; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: white; margin: 0; padding-bottom: 110px; }
         .page { display: none; padding: 20px; flex-direction: column; align-items: center; }
-        .active-page { display: flex; animation: slideUp 0.4s ease-out; }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .card { background: var(--card); border-radius: 20px; padding: 15px; width: 90%; max-width: 400px; text-align: center; margin-bottom: 15px; border: 1px solid #334155; position: relative; }
-        .btn-main { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .grid-tasks { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 400px; }
-        .task-box { background: rgba(255,255,255,0.05); border: 1px solid #334155; padding: 12px; border-radius: 15px; text-align: center; cursor: pointer; }
-        .nav-bar { position: fixed; bottom: 0; width: 100%; background: #1e293b; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #334155; z-index: 1000; }
-        .nav-item { color: #94a3b8; font-size: 11px; display: flex; flex-direction: column; align-items: center; }
-        .nav-item.active { color: var(--primary); }
+        .active-page { display: flex; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .card { background: var(--card); border-radius: 15px; padding: 15px; width: 90%; max-width: 400px; margin-bottom: 15px; border: 1px solid #334155; }
+        .btn-main { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; }
+        .admin-badge { background: var(--danger); font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-left: 5px; }
+        .nav-bar { position: fixed; bottom: 0; width: 100%; background: #1e293b; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #334155; }
+        #timerContainer { position: fixed; top: 20px; right: 20px; width: 50px; height: 50px; display: none; z-index: 10000; }
+        #timerCircle { border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; height: 100%; font-weight: bold; border: 3px solid white; }
     </style>
 </head>
 <body onload="initApp()">
 
-    <div class="ticker" id="liveTicker">User @Amit99 just redeemed ₹50 UPI Cash!</div>
     <div id="timerContainer"><div id="timerCircle">20</div></div>
 
     <div id="loginPage" class="page active-page">
-        <h1 style="color:var(--primary); margin-top:40px;">ProRewards</h1>
+        <h2>ProRewards <span id="ver">v2.0</span></h2>
         <div class="card">
-            <input type="email" id="email" placeholder="Email" style="width:90%; padding:14px; margin-bottom:12px; border-radius:10px; background:#334155; color:white; border:none;">
-            <input type="password" id="pass" placeholder="Password" style="width:90%; padding:14px; margin-bottom:12px; border-radius:10px; background:#334155; color:white; border:none;">
+            <input type="email" id="email" placeholder="Email" style="width:90%; padding:12px; margin-bottom:10px; border-radius:8px; border:none;">
+            <input type="password" id="pass" placeholder="Password" style="width:90%; padding:12px; margin-bottom:10px; border-radius:8px; border:none;">
             <button class="btn-main" onclick="handleAuth('login')">Login</button>
-            <p onclick="handleAuth('signup')" style="font-size:12px; margin-top:15px; cursor:pointer;">New User? <span style="color:var(--primary)">Create Account</span></p>
+            <button class="btn-main" style="background:none; margin-top:10px;" onclick="handleAuth('signup')">Create Account</button>
         </div>
     </div>
 
     <div id="home" class="page">
-        <div class="card" style="background: linear-gradient(135deg, #8b5cf6, #ec4899); border:none;">
-            <p style="margin:0; opacity:0.8; font-size:14px;">Wallet Balance</p>
-            <h1 id="coinDisplay" style="font-size:40px; margin:5px 0;">0 Coins</h1>
+        <div class="card" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);">
+            <p>Your Balance</p>
+            <h1 id="coinDisplay">0 Coins</h1>
         </div>
-
-        <div class="card" style="padding:10px; border-color:var(--success);">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-size:13px;"><i class="fas fa-calendar-check" style="color:var(--success);"></i> Daily Check-in</span>
-                <button id="checkInBtn" class="btn-main" style="width:auto; padding:5px 15px; font-size:12px; background:var(--success);" onclick="dailyCheckIn()">CLAIM</button>
-            </div>
-        </div>
-
-        <div class="grid-tasks">
-            <div class="task-box" onclick="openGame('treasure')">
-                <i class="fas fa-box-open" style="color:var(--neon); font-size:24px;"></i>
-                <p style="margin:5px 0 0; font-size:12px;">Treasure Box</p>
-                <small style="color:var(--gold);">Ready</small>
-            </div>
-            <div class="task-box" onclick="openGame('luck')">
-                <i class="fas fa-dharmachakra" style="color:var(--gold); font-size:24px;"></i>
-                <p style="margin:5px 0 0; font-size:12px;">Jackpot Draw</p>
-                <small style="color:var(--success);">Win 5000!</small>
-            </div>
-        </div>
-
-        <br>
-        <div class="card" style="border: 2px solid #60a5fa; background: rgba(96,165,250,0.1);">
-            <h3 style="margin:0; color:#60a5fa;">🏃‍♂️ 30 Ads Marathon</h3>
-            <p id="adProgress" style="font-size:13px; color:#94a3b8;">400 Coins (Progress: 0/30)</p>
-            <button id="marathonBtn" class="btn-main" style="background:#60a5fa;" onclick="startAdMarathon()">START ADS</button>
-        </div>
-
-        <div style="margin-top:10px;">
-            <p style="font-size:11px; color:#64748b;">Facing issues? <span style="color:var(--primary); cursor:pointer;" onclick="alert('Support: ProRewardsHelp@gmail.com')">Contact Support</span></p>
-        </div>
+        <button class="btn-main" onclick="openGame('treasure')" style="margin-bottom:10px;">🎁 Open Treasure (50 Coins)</button>
+        <button class="btn-main" onclick="startAdMarathon()" style="background:#60a5fa;">📺 Watch Ad Marathon (400 Coins)</button>
     </div>
 
-    <div id="store" class="page">
-        <h3>Redeem Center</h3>
-        <div class="grid-tasks">
-            <div class="card" style="width:auto; margin:0;"><p>₹10 Play Code</p><h4 style="color:var(--gold);">1000 Coins</h4><button class="btn-main" onclick="requestRedeem(1000, '₹10 Play Code')">Redeem</button></div>
-            <div class="card" style="width:auto; margin:0;"><p>₹50 UPI Cash</p><h4 style="color:var(--gold);">5000 Coins</h4><button class="btn-main" onclick="requestRedeem(5000, '₹50 UPI Cash')">Redeem</button></div>
+    <div id="adminPage" class="page">
+        <h3>Admin Dashboard <i class="fas fa-user-shield"></i></h3>
+        <div id="adminWithdrawalList" style="width:100%; max-width:450px;">
+            <p>Loading requests...</p>
         </div>
-        <div id="historyList" style="width:100%; margin-top:20px;"></div>
     </div>
 
     <div id="navbar" class="nav-bar" style="display:none;">
-        <div class="nav-item active" onclick="nav('home', this)"><i class="fas fa-home"></i><span>Home</span></div>
-        <div class="nav-item" onclick="nav('store', this)"><i class="fas fa-wallet"></i><span>Withdraw</span></div>
-        <div class="nav-item" onclick="logout()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></div>
+        <div onclick="nav('home')"><i class="fas fa-home"></i><br>Home</div>
+        <div id="adminNav" onclick="nav('adminPage')" style="display:none; color:var(--danger);"><i class="fas fa-tools"></i><br>Admin</div>
+        <div onclick="logout()"><i class="fas fa-sign-out-alt"></i><br>Exit</div>
     </div>
 
     <script>
-        // REPLACE THIS WITH YOUR DIRECT LINK
-        const MY_DIRECT_LINK = "https://www.effectivegatecpm.com/vughxc0v?key=602f39b05878d3f11c2c26d53e7d5568"; 
+        // CONFIGURATION
+        const AD_LINK = "https://www.effectivegatecpm.com/vughxc0v?key=602f39b05878d3f11c2c26d53e7d5568";
+        const ADMIN_EMAIL = "badgamer13411@gmail.com"; // 👈 Apna email yahan dalein
 
         const firebaseConfig = {
             apiKey: "AIzaSyAougvqQ7AYSBMwhmq_vBPyTtorkQdHdLQ",
@@ -106,111 +71,104 @@
             messagingSenderId: "253669346735",
             appId: "1:253669346735:web:cdcc6a737c9db9d07af35a"
         };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth(); const db = firebase.firestore();
-        let currentUser = null; let adCount = 0;
 
-        const names = ["@Rajesh99", "@Sahil_Loot", "@Priya_Rewards", "@Sandeep22", "@Rohan_01"];
-        setInterval(() => {
-            const n = names[Math.floor(Math.random()*names.length)];
-            document.getElementById('liveTicker').innerText = `User ${n} just redeemed ₹10 Play Code!`;
-        }, 8000);
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        let userCoins = 0;
 
         function initApp() {
-            auth.onAuthStateChanged(user => { if (user) { currentUser = user; showUI(); loadData(); loadHistory(); } });
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    if(user.email === ADMIN_EMAIL) document.getElementById('adminNav').style.display = 'block';
+                    showUI();
+                    loadUserData();
+                    loadAdminData();
+                }
+            });
         }
 
         async function handleAuth(type) {
             const e = document.getElementById('email').value, p = document.getElementById('pass').value;
-            try {
-                if(type === 'signup') {
-                    const res = await auth.createUserWithEmailAndPassword(e, p);
-                    await db.collection('users').doc(res.user.uid).set({ coins: 0, email: e, lastTreasure: 0, lastCheckIn: 0 });
-                } else { await auth.signInWithEmailAndPassword(e, p); }
-            } catch (err) { alert("Check Credentials"); }
-        }
-
-        async function loadData() {
-            const doc = await db.collection('users').doc(currentUser.uid).get();
-            const data = doc.data();
-            document.getElementById('coinDisplay').innerText = (data.coins || 0) + " Coins";
-            if(data.lastCheckIn === new Date().toDateString()) {
-                document.getElementById('checkInBtn').disabled = true;
-                document.getElementById('checkInBtn').innerText = "DONE";
+            if(type === 'signup') {
+                await auth.createUserWithEmailAndPassword(e, p);
+                await db.collection('users').doc(auth.currentUser.uid).set({ coins: 0, email: e });
+            } else {
+                await auth.signInWithEmailAndPassword(e, p);
             }
         }
 
-        async function dailyCheckIn() {
-            await db.collection('users').doc(currentUser.uid).update({ 
-                coins: firebase.firestore.FieldValue.increment(10),
-                lastCheckIn: new Date().toDateString() 
+        async function loadUserData() {
+            db.collection('users').doc(auth.currentUser.uid).onSnapshot(doc => {
+                userCoins = doc.data().coins;
+                document.getElementById('coinDisplay').innerText = userCoins + " Coins";
             });
-            loadData(); alert("10 Coins Added!");
         }
 
-        async function openGame(game) {
-            const d = await db.collection('users').doc(currentUser.uid).get();
-            if(game === 'treasure' && Date.now() - (d.data().lastTreasure || 0) < 3600000) { alert("Wait 1 hr!"); return; }
-            let win = 0; if(game === 'luck') {
-                let r = Math.random()*1000; if(Math.floor(r) === 777) win = 5000; else win = Math.floor(Math.random()*15)+5;
-            } else { win = 50; }
-            startAd(win, game === 'treasure');
+        // --- AD LOGIC WITH TIMER ---
+        function openGame(type) {
+            let win = type === 'treasure' ? 50 : 10;
+            runTimer(20, () => {
+                updateCoins(win);
+                alert("Won " + win + " Coins!");
+            });
         }
 
-        function startAd(reward, isT) {
-            let w = window.open(MY_DIRECT_LINK, '_blank');
-            let t = 20; document.getElementById('timerContainer').style.display = 'block';
-            let itv = setInterval(async () => {
-                if (w && !w.closed && document.hidden) {
-                    t--; document.getElementById('timerCircle').innerText = t;
-                    if (t <= 0) {
-                        clearInterval(itv); document.getElementById('timerContainer').style.display = 'none';
-                        let up = { coins: firebase.firestore.FieldValue.increment(reward) };
-                        if(isT) up.lastTreasure = Date.now();
-                        await db.collection('users').doc(currentUser.uid).update(up);
-                        loadData(); alert(reward + " Coins!");
-                    }
+        function runTimer(sec, callback) {
+            window.open(AD_LINK, '_blank');
+            let t = sec;
+            document.getElementById('timerContainer').style.display = 'block';
+            let itv = setInterval(() => {
+                t--;
+                document.getElementById('timerCircle').innerText = t;
+                if(t <= 0) {
+                    clearInterval(itv);
+                    document.getElementById('timerContainer').style.display = 'none';
+                    callback();
                 }
             }, 1000);
         }
 
-        async function startAdMarathon() {
-            const btn = document.getElementById('marathonBtn');
-            let w = window.open(MY_DIRECT_LINK, '_blank');
-            btn.disabled = true; let t = 20; document.getElementById('timerContainer').style.display = 'block';
-            let itv = setInterval(async () => {
-                if (w && !w.closed && document.hidden) {
-                    t--; document.getElementById('timerCircle').innerText = t;
-                    if (t <= 0) {
-                        clearInterval(itv); document.getElementById('timerContainer').style.display = 'none';
-                        adCount++; document.getElementById('adProgress').innerText = `Progress: ${adCount}/30`;
-                        if (adCount >= 30) {
-                            await db.collection('users').doc(currentUser.uid).update({ coins: firebase.firestore.FieldValue.increment(400) });
-                            loadData(); adCount = 0; alert("400 Coins Added!");
-                        }
-                        setTimeout(() => btn.disabled = false, 5000);
-                    }
-                }
-            }, 1000);
+        async function updateCoins(amt) {
+            await db.collection('users').doc(auth.currentUser.uid).update({
+                coins: firebase.firestore.FieldValue.increment(amt)
+            });
         }
 
-        async function loadHistory() {
-            const snap = await db.collection('withdrawals').where('uid', '==', currentUser.uid).orderBy('date', 'desc').limit(3).get();
-            const container = document.getElementById('historyList'); container.innerHTML = "";
-            snap.forEach(doc => { container.innerHTML += `<div style="background:#1e293b; padding:10px; margin-bottom:5px; border-radius:10px; font-size:11px;">${doc.data().item} - ${doc.data().status}</div>`; });
+        // --- ADMIN FUNCTIONS ---
+        async function loadAdminData() {
+            if(auth.currentUser.email !== ADMIN_EMAIL) return;
+            db.collection('withdrawals').where('status', '==', 'Pending').onSnapshot(snap => {
+                let html = "";
+                snap.forEach(doc => {
+                    let d = doc.data();
+                    html += `<div class="card">
+                        <p>User: ${d.email}</p>
+                        <p>UPI: <b>${d.details}</b></p>
+                        <p>Amount: ${d.item}</p>
+                        <button class="btn-main" style="background:var(--success)" onclick="approve('${doc.id}')">Approve</button>
+                    </div>`;
+                });
+                document.getElementById('adminWithdrawalList').innerHTML = html || "No pending requests.";
+            });
         }
 
-        async function requestRedeem(cost, item) {
-            const doc = await db.collection('users').doc(currentUser.uid).get();
-            if(doc.data().coins < cost) { alert("Low Balance!"); return; }
-            const upi = prompt("Enter UPI:"); if(!upi) return;
-            await db.collection('users').doc(currentUser.uid).update({ coins: firebase.firestore.FieldValue.increment(-cost) });
-            await db.collection('withdrawals').add({ uid: currentUser.uid, item: item, details: upi, status: 'Pending', date: new Date().toLocaleString() });
-            loadData(); loadHistory(); alert("Requested!");
+        async function approve(id) {
+            await db.collection('withdrawals').doc(id).update({ status: 'Success' });
+            alert("Payment Approved!");
         }
 
-        function showUI() { document.getElementById('loginPage').style.display = 'none'; document.getElementById('home').classList.add('active-page'); document.getElementById('navbar').style.display = 'flex'; }
-        function nav(id, el) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); document.getElementById(id).classList.add('active-page'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
+        function showUI() { 
+            document.getElementById('loginPage').style.display = 'none'; 
+            document.getElementById('home').classList.add('active-page');
+            document.getElementById('navbar').style.display = 'flex';
+        }
+
+        function nav(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.getElementById(id).classList.add('active-page');
+        }
+
         function logout() { auth.signOut().then(() => location.reload()); }
     </script>
 </body>
